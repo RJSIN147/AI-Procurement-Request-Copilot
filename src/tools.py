@@ -49,6 +49,8 @@ VENDOR_ARG = {"type": "object", "properties": {"vendor_name": {
 RISK_FIELDS = ("risk_level", "security_review_status", "last_review_date", "processes_personal_data",
                "stores_data_outside_region", "notes")
 REQUEST_FIELD = re.compile(r"^[a-z][a-z0-9_]{0,40}$")
+# Whole-string match only, so "policy:§5 SW999" can't pass as a policy citation.
+POLICY_REF = re.compile(r"^(?:policy\s*[:\-]?\s*)?(?:§|section\s*)?\s*(\d{1,2})$")
 
 
 def normalize_ref(ref: str) -> str:
@@ -57,7 +59,7 @@ def normalize_ref(ref: str) -> str:
     if lowered.startswith(("request.", "request:", "request ")):
         return "request:" + lowered[8:].replace(" ", "")
     if lowered.startswith(("policy", "§", "section")):
-        section = re.search(r"(\d{1,2})\b", lowered)
+        section = POLICY_REF.match(lowered)
         if section:
             return f"policy:§{int(section.group(1))}"
     return lowered.replace(" ", "")

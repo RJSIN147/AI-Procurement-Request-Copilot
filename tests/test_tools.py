@@ -14,6 +14,13 @@ class RefTests(unittest.TestCase):
         self.assertEqual(normalize_ref("budget: Finance"), "budget:finance")
         self.assertEqual(normalize_ref("PO-2513"), "po-2513")
 
+    def test_policy_ref_must_be_the_whole_citation(self):
+        box = ToolBox(base_request(), vendor_risk_fn=fake_vendor_risk)
+        box.call("read_policy", {"section": 5})
+        self.assertEqual(box.resolve_ref("Policy §5"), "read_policy")
+        for smuggled in ("policy:§5 SW999", "§5, see V999", "section 5 / budget:Sales", "policy 5a"):
+            self.assertIsNone(box.resolve_ref(smuggled), smuggled)
+
     def test_refs_only_grounded_after_the_tool_ran(self):
         box = ToolBox(base_request(), vendor_risk_fn=fake_vendor_risk)
         self.assertIsNone(box.resolve_ref("V010"))
