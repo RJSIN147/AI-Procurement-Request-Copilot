@@ -33,6 +33,10 @@ SECURITY_DATA_TERMS = ("source_code", "source code", "confidential", "pii", "per
 SECURITY_INTEGRATION_TERMS = ("git", "source code", "production", "cloud account", "aws", "azure",
                               "gcp", "kubernetes", "database", "secret", "credential", "vault")
 PII_TERMS = ("pii", "personal")
+# Data whose storage location matters for §6. Production access is a Security trigger,
+# but telemetry isn't personal/confidential data, so it doesn't drive residency checks.
+RESIDENCY_SENSITIVE_TERMS = ("source_code", "source code", "confidential", "pii", "personal", "credential", "secret",
+                             "password")
 
 # Flags that stop a request going straight to business approvers.
 BLOCKING_FLAGS = {"budget_insufficient", "budget_unverified", "vendor_risk_unavailable",
@@ -370,7 +374,7 @@ def check_data_handling(request: dict, risk: dict) -> list[Finding]:
         findings.append(Finding("privacy", f"The tool would process {level.replace('_', ' ')}.",
                                 "policy:§6", records=["request:data_access_level"], approvals=["Privacy"],
                                 flags=["privacy_review_required"]))
-    if is_sensitive_data(level):
+    if any(term in level for term in RESIDENCY_SENSITIVE_TERMS):
         if risk.get("available") and risk.get("found") and risk.get("stores_data_outside_region"):
             findings.append(Finding("data_residency",
                                     f"{vendor} stores data outside the operating region and the request involves "
