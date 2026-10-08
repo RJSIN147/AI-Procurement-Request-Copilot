@@ -123,6 +123,20 @@ def data_level(request: dict) -> str:
     return _norm(request.get("data_access_level"))
 
 
+def integrations(request: dict) -> list[str]:
+    """requested_integrations as a list of strings, whatever shape it arrived in.
+
+    A bare string would otherwise be iterated character by character and slip past
+    the Security triggers.
+    """
+    value = request.get("requested_integrations")
+    if value is None:
+        return []
+    if isinstance(value, (list, tuple, set)):
+        return [str(v) for v in value if not _blank(v)]
+    return [part.strip() for part in re.split(r"[,;\n]", str(value)) if not _blank(part)]
+
+
 def is_sensitive_data(level: str) -> bool:
     return any(term in level for term in SECURITY_DATA_TERMS)
 
@@ -253,7 +267,7 @@ def check_vendor(request: dict, registry: dict | None, risk: dict, reference_dat
     vendor = request.get("vendor_name") or "The vendor"
     findings: list[Finding] = []
 
-    reg_status_ok = reg_current = False
+    reg_status_ok = False
     reg_date = None
     if registry is None:
         findings.append(Finding("vendor_registry",
@@ -266,7 +280,6 @@ def check_vendor(request: dict, registry: dict | None, risk: dict, reference_dat
         reg_status_ok = is_approved(registry.get("security_status"))
         reg_date = parse_date(registry.get("security_review_date"))
         age = review_age_days(reg_date, reference_date)
-        reg_current = reg_status_ok and age is not None and age <= REVIEW_VALID_DAYS
         if not is_approved(registry.get("procurement_status")):
             findings.append(Finding("vendor_registry",
                                     f"{vendor} has procurement status '{registry.get('procurement_status')}' in the "
@@ -277,9 +290,10 @@ def check_vendor(request: dict, registry: dict | None, risk: dict, reference_dat
                                     f"Registry security status for {vendor} is '{registry.get('security_status')}'.",
                                     "policy:§5", records=reg_ref, approvals=["Security"],
                                     flags=["security_review_required"]))
-        elif age is None:
+        elif age is None or age < 0:
+            problem = "has no review date on file" if age is None else f"has a review date ({reg_date}) after the reference date"
             findings.append(Finding("vendor_security",
-                                    f"Registry shows {vendor} as approved but has no review date on file.",
+                                    f"Registry shows {vendor} as approved but {problem}.",
                                     "policy:§5", records=reg_ref, approvals=["Security"],
                                     flags=["security_review_required"]))
         elif age > REVIEW_VALID_DAYS:
@@ -308,7 +322,8 @@ def check_vendor(request: dict, registry: dict | None, risk: dict, reference_dat
     api_date = parse_date(risk.get("last_review_date"))
     api_age = review_age_days(api_date, reference_date)
     api_status_ok = api_status == "approved"
-    if api_status == "expired" or (api_status_ok and (api_age is None or api_age > REVIEW_VALID_DAYS)):
+    # a missing or future-dated review counts as not current (fail closed)
+    if api_status == "expired" or (api_status_ok and (api_age is None or not 0 <= api_age <= REVIEW_VALID_DAYS)):
         findings.append(Finding("vendor_risk",
                                 f"Vendor-risk service reports {vendor}'s assessment as '{api_status}' "
                                 f"(last review {api_date or 'not recorded'}).",
@@ -344,7 +359,7 @@ def check_data_handling(request: dict, risk: dict) -> list[Finding]:
     reasons = []
     if is_sensitive_data(level):
         reasons.append(f"data access level '{level}'")
-    for integration in request.get("requested_integrations") or []:
+    for integration in integrations(request):
         if any(term in _norm(integration) for term in SECURITY_INTEGRATION_TERMS):
             reasons.append(f"integration '{integration}'")
     if reasons:

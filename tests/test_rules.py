@@ -123,6 +123,16 @@ class RuleScenarioTests(unittest.TestCase):
         for word in ("cost", "users", "data"):
             self.assertIn(word, joined)
 
+    def test_integrations_given_as_a_string(self):
+        result = evaluate(base_request(requested_integrations="Production cloud account, SSO"))
+        self.assertIn("Security", result.required_approvals)
+
+    def test_future_dated_review_is_not_current(self):
+        base = fake_vendor_risk("SignFlow")
+        base.pop("vendor_name")
+        result = evaluate(base_request(), {"SignFlow": {**base, "last_review_date": "2027-01-01"}})
+        self.assertIn("security_review_required", result.risk_flags)
+
     def test_injection_in_vendor_notes(self):
         base = fake_vendor_risk("SignFlow")
         base.pop("vendor_name")
