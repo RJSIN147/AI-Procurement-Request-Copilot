@@ -1,16 +1,23 @@
 from __future__ import annotations
 
+import os
 import signal
 import subprocess
 import sys
 import time
 from pathlib import Path
+from urllib.parse import urlparse
 
 import requests
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env", override=False)
+
+# The agent's vendor client reads VENDOR_RISK_BASE_URL, so start the mock API on that
+# port instead of a hardcoded 8001 (otherwise the two can silently disagree).
+API_URL = os.getenv("VENDOR_RISK_BASE_URL", "http://127.0.0.1:8001").rstrip("/")
+API_PORT = str(urlparse(API_URL).port or 8001)
 
 
 def start(cmd: list[str]) -> subprocess.Popen:
@@ -45,7 +52,7 @@ def main() -> None:
     signal.signal(signal.SIGTERM, _handle_termination)
     procs: list[subprocess.Popen] = []
     try:
-        print("Starting vendor-risk API on http://127.0.0.1:8001 ...")
+        print(f"Starting vendor-risk API on http://127.0.0.1:{API_PORT} ...")
         api_proc = start(
             [
                 sys.executable,
@@ -55,11 +62,11 @@ def main() -> None:
                 "--host",
                 "127.0.0.1",
                 "--port",
-                "8001",
+                API_PORT,
             ]
         )
         procs.append(api_proc)
-        wait_for_api("http://127.0.0.1:8001/health", api_proc)
+        wait_for_api(f"http://127.0.0.1:{API_PORT}/health", api_proc)
         print("Vendor-risk API is ready.")
 
         try:
