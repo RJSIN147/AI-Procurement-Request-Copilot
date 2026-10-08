@@ -6,14 +6,14 @@ from typing import Callable
 
 import openai
 
-from src.agents import run_single
+from src.agents import run_single, run_staged
 from src.contracts import ProcurementDecision, RunTelemetry
 from src.guardrails import finalize
 from src.llm import LLMClient, LLMUnavailable
 from src.telemetry import RunTelemetryCounter
 from src.tools import ToolBox
 
-ARCHITECTURES = ("single", "rules")
+ARCHITECTURES = ("single", "staged", "rules")
 
 
 @dataclass
@@ -46,7 +46,10 @@ def analyze_request(request: dict, architecture: str = "single", *,
         try:
             llm = LLMClient(telemetry)
             model = llm.model
-            draft = run_single(request, toolbox, llm)
+            if architecture == "single":
+                draft = run_single(request, toolbox, llm)
+            else:
+                draft, pack = run_staged(request, toolbox, llm)
             if draft is None:
                 error = "the model did not return a valid decision"
         except LLMUnavailable as exc:

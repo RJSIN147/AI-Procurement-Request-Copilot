@@ -7,7 +7,7 @@ import unittest
 from types import SimpleNamespace
 from unittest import mock
 
-from src.agents import DecisionDraft, run_single
+from src.agents import DecisionDraft, run_single, run_staged
 from src.guardrails import finalize
 from src.pipeline import analyze_request
 from src.telemetry import RunTelemetryCounter
@@ -90,6 +90,26 @@ class SingleAgentLoopTests(unittest.TestCase):
         box = toolbox()
         llm = FakeLLM([reply(content="thinking...") for _ in range(7)], box.telemetry)
         self.assertIsNone(run_single(box.request, box, llm))
+
+
+class StagedLoopTests(unittest.TestCase):
+    def test_analyst_then_reviewer(self):
+        box = toolbox()
+        pack = {"need_summary": "Three more signing identities.", "existing_tools": [], "budget": "ok",
+                "vendor_status": "approved", "data_and_integrations": "internal docs", "gaps_or_conflicts": [],
+                "suspicious_content": [], "evidence": [{"ref": "V010", "finding": "Approved vendor"}]}
+        llm = FakeLLM([
+            reply(call("get_vendor_registry_record"), call("check_department_budget")),
+            reply(call("submit_evidence_pack", pack)),
+            reply(call("submit_decision", draft(evidence=[{"ref": "policy:§4", "finding": "Manager tier"}]))),
+        ], box.telemetry)
+        result, got_pack = run_staged(box.request, box, llm)
+        self.assertIsNotNone(result)
+        self.assertEqual(got_pack.need_summary, "Three more signing identities.")
+        self.assertIn("check_policy_rules", box.telemetry.tool_names)  # run by code between the stages
+        reviewer_input = llm.seen[2][1]["content"]
+        self.assertIn("<analyst_evidence_pack>", reviewer_input)
+        self.assertIn("<policy_check>", reviewer_input)
 
 
 class GuardrailTests(unittest.TestCase):
