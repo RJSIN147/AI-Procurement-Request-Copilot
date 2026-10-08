@@ -14,6 +14,12 @@ class RunTelemetry(BaseModel):
     llm_calls: int | None = None
     tool_calls: int | None = None
     tool_names: list[str] = Field(default_factory=list)
+    # additions (optional, so the original contract still validates)
+    architecture: str | None = None
+    model: str | None = None
+    latency_ms: float | None = None
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
 
 
 class ProcurementDecision(BaseModel):
@@ -26,6 +32,11 @@ class ProcurementDecision(BaseModel):
     next_step: str
     human_review_required: bool = True
     telemetry: RunTelemetry | None = None
+    # additions
+    next_action: str | None = Field(default=None, description="request_clarification | escalate_for_review | "
+                                                              "use_existing_tool | route_for_approval")
+    open_questions: list[str] = Field(default_factory=list)
+    guardrail_notes: list[str] = Field(default_factory=list, description="What code changed in the model's draft")
 
 
 Architecture = Literal["single", "staged"]
@@ -44,3 +55,7 @@ Architecture = Literal["single", "staged"]
 # vendor_risk_unavailable
 # prompt_injection_detected
 # missing_information
+#
+# Extra flags used by this implementation:
+# new_vendor, budget_unverified, vendor_assessment_missing, high_vendor_risk,
+# cross_region_data, ai_analysis_unavailable
