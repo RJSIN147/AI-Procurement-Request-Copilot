@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
 
 from src.contracts import ProcurementDecision
 from src.solution import handle_request
+from mock_service import mock_api_running
 
 
 def norm(value: object) -> str:
@@ -112,4 +113,6 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    # the vendor-risk tool needs the mock API; start it for the run if it isn't up
+    with mock_api_running():
+        main()
