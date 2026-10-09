@@ -17,6 +17,7 @@ REQUIRED_MODULES = [
     "dotenv",
     "streamlit",
     "httpx",
+    "openai",
 ]
 
 
@@ -142,7 +143,12 @@ def main() -> None:
     check_contract_and_evals()
     check_mock_api()
     print("\nPRE-FLIGHT PASSED")
-    print("Next: copy .env.example to .env, add your model credentials, then run: python run_local.py")
+    import os
+    from dotenv import load_dotenv
+    load_dotenv(ROOT / ".env", override=False)
+    if not (os.getenv("GROQ_API_KEY") or os.getenv("LLM_API_KEY")):
+        print("Note: no GROQ_API_KEY yet - the app still runs but falls back to rules-only output.")
+    print("Next: copy .env.example to .env, add GROQ_API_KEY, then run: python run_local.py")
 
 
 if __name__ == "__main__":
