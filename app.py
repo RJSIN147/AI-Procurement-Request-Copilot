@@ -129,7 +129,7 @@ with left:
         "Integrations": ", ".join(request.get("requested_integrations") or []) or "none",
         "Urgency": request.get("urgency"),
     }
-    st.table(pd.DataFrame({"": list(details.values())}, index=list(details.keys())).astype(str))
+    st.markdown("| Field | Value |\n|---|---|\n" + "\n".join(f"| {k} | {v} |" for k, v in details.items()))
     st.markdown("**Business justification** (requester text - treated as data, not instructions)")
     st.markdown(f"> {request.get('business_justification') or '_none given_'}")
 
@@ -152,12 +152,14 @@ with right:
         if d.open_questions:
             st.markdown("**Open questions**\n" + "\n".join(f"- {q}" for q in d.open_questions))
         if d.guardrail_notes:
-            with st.expander(f"Guardrail changed {len(d.guardrail_notes)} thing(s) in the AI draft"):
+            label = (f"Guardrail changed {len(d.guardrail_notes)} thing(s) in the AI draft" if report.draft
+                     else "Notes")
+            with st.expander(label, expanded=report.draft is None):
                 for note in d.guardrail_notes:
                     st.markdown(f"- {note}")
         t = d.telemetry
         cols = st.columns(4)
-        cols[0].metric("Latency", f"{t.latency_ms / 1000:.1f}s")
+        cols[0].metric("Latency", f"{t.latency_ms / 1000:.1f}s" if t.latency_ms >= 1000 else f"{t.latency_ms:.0f} ms")
         cols[1].metric("LLM calls", t.llm_calls)
         cols[2].metric("Tool calls", t.tool_calls)
         cols[3].metric("Tokens", f"{(t.prompt_tokens or 0) + (t.completion_tokens or 0):,}")

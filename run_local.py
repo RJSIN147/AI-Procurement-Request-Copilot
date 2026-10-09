@@ -75,7 +75,7 @@ def main() -> None:
             print("Streamlit is not installed. Run: pip install -r requirements.txt")
             print("The mock API is still running. Press Ctrl+C to stop.")
         else:
-            print("Starting starter UI on http://127.0.0.1:8501 ...")
+            print("Starting UI on http://127.0.0.1:8501 ... (open it in your browser)")
             procs.append(
                 start(
                     [

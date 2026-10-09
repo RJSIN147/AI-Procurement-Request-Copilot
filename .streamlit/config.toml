@@ -1,0 +1,7 @@
+# Headless so Streamlit's first-run "enter your email" prompt doesn't block or crash run_local.py
+[server]
+headless = true
+address = "127.0.0.1"
+
+[browser]
+gatherUsageStats = false
