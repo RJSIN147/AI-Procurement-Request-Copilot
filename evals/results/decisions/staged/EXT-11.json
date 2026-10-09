@@ -1,0 +1,214 @@
+{
+  "case_id": "EXT-11",
+  "title": "Business purpose filled in but unusable",
+  "expected_next_action": [
+    "request_clarification"
+  ],
+  "minimum_check_failures": [
+    "missing-info item absent (expected one of: ['purpose', 'justification', 'business need', 'use case'])"
+  ],
+  "decision": {
+    "request_id": "EXT-11",
+    "recommendation": "Route for approval: The request is within budget and meets the Manager\u2011level approval threshold, but an approved SignFlow license with sufficient seats already exists. Confirm use of existing capacity prior to creating a new purchase.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams is in Finance, IC4, United Kingdom.",
+        "reference": "E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Finance department has $29,000 available software budget; request $900 is within budget.",
+        "reference": "budget:Finance"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "SignFlow is already approved company\u2011wide with 45 licensed seats (annual cost $16,000).",
+        "reference": "SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor SignFlow procurement, security, and legal status are Approved; last security review 2026\u201106\u201120 (102 days old, within 365\u2011day validity).",
+        "reference": "V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor risk assessment rates SignFlow low risk, processes personal data, stores data within region.",
+        "reference": "vendor-risk:SignFlow"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy check: annual amount $900 requires Manager approval (policy \u00a74).",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy check: existing catalog software overlaps with request (SignFlow, SW010); flag existing_tool_overlap (policy \u00a73).",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $900 falls in the tier requiring Manager.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $900 is within Finance's available software budget of $29,000 ($28,100 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Finance"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignFlow (SW010, Approved, Company-wide, 45 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW010"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Obtain Manager approval and verify that existing SignFlow seats can satisfy the request before purchasing new licenses.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 9605.4,
+      "rate_limit_wait_ms": 56000.0,
+      "prompt_tokens": 6942,
+      "completion_tokens": 1014
+    },
+    "next_action": "route_for_approval",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "route_for_approval",
+    "recommendation": "The request is within budget and meets the Manager\u2011level approval threshold, but an approved SignFlow license with sufficient seats already exists. Confirm use of existing capacity prior to creating a new purchase.",
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester Noah Williams is in Finance, IC4, United Kingdom."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department has $29,000 available software budget; request $900 is within budget."
+      },
+      {
+        "ref": "SW010",
+        "finding": "SignFlow is already approved company\u2011wide with 45 licensed seats (annual cost $16,000)."
+      },
+      {
+        "ref": "V010",
+        "finding": "Vendor SignFlow procurement, security, and legal status are Approved; last security review 2026\u201106\u201120 (102 days old, within 365\u2011day validity)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "Vendor risk assessment rates SignFlow low risk, processes personal data, stores data within region."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy check: annual amount $900 requires Manager approval (policy \u00a74)."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy check: existing catalog software overlaps with request (SignFlow, SW010); flag existing_tool_overlap (policy \u00a73)."
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Obtain Manager approval and verify that existing SignFlow seats can satisfy the request before purchasing new licenses."
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Finance needs SignFlow Bulk Send for internal document signing for 2 users, urgent request.",
+    "existing_tools": [
+      {
+        "ref": "SW010",
+        "covers_need": "yes",
+        "note": "Approved SignFlow license already covers E\u2011signature needs for Finance; seats available exceed request of 2 users."
+      }
+    ],
+    "budget": "Finance department has $29,000 available; request $900 within budget.",
+    "vendor_status": "Approved",
+    "data_and_integrations": "No integrations requested; data access level internal_documents aligns with vendor's handling of internal data.",
+    "gaps_or_conflicts": [],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester Noah Williams is in Finance, level IC4, UK."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department budget available $29,000; request $900 is within budget."
+      },
+      {
+        "ref": "SW010",
+        "finding": "SignFlow product already approved company\u2011wide with 45 licensed seats, annual cost $16,000."
+      },
+      {
+        "ref": "V010",
+        "finding": "Vendor SignFlow procurement, security, and legal status all Approved; last security review 2026\u201106\u201120 (102 days old)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "External risk assessment shows SignFlow low risk, approved security review, processes personal data, stores data within region."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "route_for_approval",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 7,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

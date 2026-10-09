@@ -1,0 +1,237 @@
+{
+  "case_id": "EXT-06",
+  "title": "Unknown vendor and a department with no budget record",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-06",
+    "recommendation": "Escalate for review due to missing budget verification, new vendor without assessment, and required security and legal reviews.",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $9,000 falls in the tier requiring Department Head and Procurement approvals.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "No software budget record exists for Go To Market; available budget cannot be verified.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "DeckGenie is not in the internal vendor registry (treated as a new vendor with no security assessment or legal terms on file).",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "The vendor-risk service has no assessment on record for DeckGenie.",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester profile retrieved: Robert King, Director, Go To Market, USA.",
+        "reference": "E007"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External vendor-risk service has no assessment for DeckGenie.",
+        "reference": "vendor-risk:DeckGenie"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $9,000 falls in the tier requiring Department Head, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "No software budget record exists for Go To Market; available budget cannot be verified.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "DeckGenie is not in the internal vendor registry (treated as a new vendor with no security assessment or legal terms on file).",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "The vendor-risk service has no assessment on record for DeckGenie.",
+        "reference": "policy:\u00a75, vendor-risk:DeckGenie"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_unverified",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required",
+      "vendor_assessment_missing"
+    ],
+    "next_step": "Security and Legal teams must conduct mandatory reviews; Finance must verify or establish a software budget for Go To Market before any further approval.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 7548.7,
+      "rate_limit_wait_ms": 46000.0,
+      "prompt_tokens": 8886,
+      "completion_tokens": 1520
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Dropped 3 evidence item(s) citing refs no tool returned: check_department_budget, search_software_catalog, get_vendor_registry_record."
+    ]
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "Escalate for review due to missing budget verification, new vendor without assessment, and required security and legal reviews.",
+    "evidence": [
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Annual amount $9,000 falls in the tier requiring Department Head and Procurement approvals."
+      },
+      {
+        "ref": "policy:\u00a72",
+        "finding": "No software budget record exists for Go To Market; available budget cannot be verified."
+      },
+      {
+        "ref": "policy:\u00a75",
+        "finding": "DeckGenie is not in the internal vendor registry (treated as a new vendor with no security assessment or legal terms on file)."
+      },
+      {
+        "ref": "policy:\u00a75",
+        "finding": "The vendor-risk service has no assessment on record for DeckGenie."
+      },
+      {
+        "ref": "E007",
+        "finding": "Requester profile retrieved: Robert King, Director, Go To Market, USA."
+      },
+      {
+        "ref": "check_department_budget",
+        "finding": "Department budget check failed: no software budget record for Go To Market."
+      },
+      {
+        "ref": "search_software_catalog",
+        "finding": "Software catalog search returned no matches for product, vendor, or category."
+      },
+      {
+        "ref": "get_vendor_registry_record",
+        "finding": "Vendor registry has no record for DeckGenie."
+      },
+      {
+        "ref": "vendor-risk:DeckGenie",
+        "finding": "External vendor-risk service has no assessment for DeckGenie."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "risk_flags": [
+      "budget_unverified",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required",
+      "vendor_assessment_missing"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Security and Legal teams must conduct mandatory reviews; Finance must verify or establish a software budget for Go To Market before any further approval."
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Go To Market leadership requires a tool to quickly generate customer pitch decks from approved templates (DeckGenie Pitch Builder).",
+    "existing_tools": [],
+    "budget": "No software budget record for department 'Go To Market'.",
+    "vendor_status": "Vendor not in internal registry; external risk assessment unavailable.",
+    "data_and_integrations": "No integrations requested; data access level is internal_marketing.",
+    "gaps_or_conflicts": [
+      "Missing department software budget record for Go To Market.",
+      "No existing approved software matches for DeckGenie Pitch Builder or its category.",
+      "Vendor DeckGenie not listed in internal vendor registry.",
+      "No external risk assessment available for DeckGenie."
+    ],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E007",
+        "finding": "Requester profile retrieved: Director Robert King in Go To Market, USA."
+      },
+      {
+        "ref": "check_department_budget",
+        "finding": "Department budget check failed: no software budget record for Go To Market."
+      },
+      {
+        "ref": "search_software_catalog",
+        "finding": "Software catalog search returned no matches for product, vendor, or category."
+      },
+      {
+        "ref": "get_vendor_registry_record",
+        "finding": "Vendor registry has no record for DeckGenie."
+      },
+      {
+        "ref": "vendor-risk:DeckGenie",
+        "finding": "External vendor-risk service has no assessment for DeckGenie."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 9,
+    "evidence_ungrounded": 3,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "case_id": "EXT-09",
+  "title": "Vague request with cost only hinted in text",
+  "expected_next_action": [
+    "request_clarification"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-09",
+    "recommendation": "Request clarification: Clarify the annual cost estimate and evaluate reuse of the existing NeuralDesk Business license before proceeding.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Elena Garcia is in Sales department, manager Robert King.",
+        "reference": "E003"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Sales department has $18,000 available software budget, but request lacks annual cost.",
+        "reference": "budget:Sales"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor NeuralDesk is approved for procurement and security, last security review 2026-03-02.",
+        "reference": "V009"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment rates NeuralDesk medium risk, processes personal data and stores data outside region; sensitive-data use requires Security and Privacy review.",
+        "reference": "vendor-risk:NeuralDesk"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a71: Request missing annual cost estimate.",
+        "reference": "policy:\u00a71"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a72: Budget check pending due to missing cost.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a73: Existing catalog entry NeuralDesk Business (SW009) provides 150 seats company\u2011wide; overlap exists.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a74: Approval tier cannot be set until cost provided; Procurement to triage.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a78: AI tool subject to normal security, privacy, legal review for new data classes.",
+        "reference": "policy:\u00a78"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Request is not ready for approval; missing: Annual cost (or a reasonable annual estimate).",
+        "reference": "policy:\u00a71"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Approval tier cannot be set until an annual cost is provided; Procurement to triage.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Budget check pending: no annual cost given (Sales has $18,000 available).",
+        "reference": "policy:\u00a72, budget:Sales"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: NeuralDesk Business (SW009, Approved - limited use, Company-wide, 150 seats; same vendor + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW009"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "AI tool: normal budget, security, privacy and legal rules apply; earlier approvals do not extend to new use cases or data classes.",
+        "reference": "policy:\u00a78"
+      }
+    ],
+    "required_approvals": [
+      "Procurement"
+    ],
+    "missing_information": [
+      "Annual cost (or a reasonable annual estimate)"
+    ],
+    "risk_flags": [
+      "missing_information",
+      "existing_tool_overlap"
+    ],
+    "next_step": "Ask the requester to provide a clear annual cost estimate for the NeuralDesk seats (e.g., $500/month \u00d7 12 = $6,000) and confirm whether the existing NeuralDesk Business license can meet the team's needs.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 6,
+      "tool_calls": 5,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 15110.2,
+      "rate_limit_wait_ms": 33500.0,
+      "prompt_tokens": 9233,
+      "completion_tokens": 1210
+    },
+    "next_action": "request_clarification",
+    "open_questions": [
+      "What is the expected annual cost for the 5 NeuralDesk seats?",
+      "Can the existing NeuralDesk Business license (SW009) cover the required usage, or is a separate purchase needed?",
+      "Annual cost (or a reasonable annual estimate)"
+    ],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "request_clarification",
+    "recommendation": "Clarify the annual cost estimate and evaluate reuse of the existing NeuralDesk Business license before proceeding.",
+    "evidence": [
+      {
+        "ref": "E003",
+        "finding": "Requester Elena Garcia is in Sales department, manager Robert King."
+      },
+      {
+        "ref": "budget:Sales",
+        "finding": "Sales department has $18,000 available software budget, but request lacks annual cost."
+      },
+      {
+        "ref": "V009",
+        "finding": "Vendor NeuralDesk is approved for procurement and security, last security review 2026-03-02."
+      },
+      {
+        "ref": "vendor-risk:NeuralDesk",
+        "finding": "External risk assessment rates NeuralDesk medium risk, processes personal data and stores data outside region; sensitive-data use requires Security and Privacy review."
+      },
+      {
+        "ref": "policy:\u00a71",
+        "finding": "Policy \u00a71: Request missing annual cost estimate."
+      },
+      {
+        "ref": "policy:\u00a72",
+        "finding": "Policy \u00a72: Budget check pending due to missing cost."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy \u00a73: Existing catalog entry NeuralDesk Business (SW009) provides 150 seats company\u2011wide; overlap exists."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy \u00a74: Approval tier cannot be set until cost provided; Procurement to triage."
+      },
+      {
+        "ref": "policy:\u00a78",
+        "finding": "Policy \u00a78: AI tool subject to normal security, privacy, legal review for new data classes."
+      }
+    ],
+    "required_approvals": [
+      "Procurement"
+    ],
+    "risk_flags": [
+      "missing_information",
+      "existing_tool_overlap"
+    ],
+    "missing_information": [
+      "Annual cost (or a reasonable annual estimate)"
+    ],
+    "open_questions": [
+      "What is the expected annual cost for the 5 NeuralDesk seats?",
+      "Can the existing NeuralDesk Business license (SW009) cover the required usage, or is a separate purchase needed?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Ask the requester to provide a clear annual cost estimate for the NeuralDesk seats (e.g., $500/month \u00d7 12 = $6,000) and confirm whether the existing NeuralDesk Business license can meet the team's needs."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "request_clarification",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 9,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {
+        "vendor_name": "NeuralDesk"
+      }
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {
+        "vendor_name": "NeuralDesk"
+      }
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

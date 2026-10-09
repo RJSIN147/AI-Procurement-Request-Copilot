@@ -1,0 +1,180 @@
+{
+  "case_id": "EXT-04",
+  "title": "Low-value services purchase from an approved vendor",
+  "expected_next_action": [
+    "route_for_approval"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1010",
+    "recommendation": "Route for approval: The request is within budget, the vendor is approved with low risk, and the only policy requirement is Manager approval. Note the existing SignFlow license and verify that the training service is not already covered before purchase.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams is in Finance, reports to Director Priya Shah.",
+        "reference": "E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Finance department has $29,000 available; request $950 is within budget.",
+        "reference": "budget:Finance"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "SignFlow is an approved vendor with current security review (age 102 days).",
+        "reference": "V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment shows low risk, processes personal data, no data residency issue.",
+        "reference": "vendor-risk:SignFlow"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Catalog contains existing SignFlow product (SW010) approved company\u2011wide with 45 seats; overlap flagged but not a rejection.",
+        "reference": "SW010"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a74 requires Manager approval for purchases \u2264 $5,000; policy \u00a73 notes existing tool overlap must be considered.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a72 confirms budget compliance does not itself approve purchase.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $950 falls in the tier requiring Manager.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $950 is within Finance's available software budget of $29,000 ($28,050 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Finance"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignFlow (SW010, Approved, Company-wide, 45 seats; same vendor + same product). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW010"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Obtain Manager approval (Priya Shah's direct manager) and proceed with standard procurement workflow.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "check_policy_rules",
+        "get_vendor_risk_assessment"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 9359.5,
+      "rate_limit_wait_ms": 71500.0,
+      "prompt_tokens": 11342,
+      "completion_tokens": 1159
+    },
+    "next_action": "route_for_approval",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "route_for_approval",
+    "recommendation": "The request is within budget, the vendor is approved with low risk, and the only policy requirement is Manager approval. Note the existing SignFlow license and verify that the training service is not already covered before purchase.",
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester Noah Williams is in Finance, reports to Director Priya Shah."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department has $29,000 available; request $950 is within budget."
+      },
+      {
+        "ref": "V010",
+        "finding": "SignFlow is an approved vendor with current security review (age 102 days)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "External risk assessment shows low risk, processes personal data, no data residency issue."
+      },
+      {
+        "ref": "SW010",
+        "finding": "Catalog contains existing SignFlow product (SW010) approved company\u2011wide with 45 seats; overlap flagged but not a rejection."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy \u00a74 requires Manager approval for purchases \u2264 $5,000; policy \u00a73 notes existing tool overlap must be considered."
+      },
+      {
+        "ref": "policy:\u00a72",
+        "finding": "Policy \u00a72 confirms budget compliance does not itself approve purchase."
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Obtain Manager approval (Priya Shah's direct manager) and proceed with standard procurement workflow."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "route_for_approval",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 7,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {
+        "vendor_name": "SignFlow"
+      }
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {
+        "vendor_name": "SignFlow"
+      }
+    }
+  ]
+}

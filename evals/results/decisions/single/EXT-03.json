@@ -1,0 +1,178 @@
+{
+  "case_id": "EXT-03",
+  "title": "Existing company-wide tool already covers the need",
+  "expected_next_action": [
+    "use_existing_tool"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1008",
+    "recommendation": "Route for approval: The request is within budget and the vendor is approved, but an existing company\u2011wide license for TaskFlow already exists. Confirm the specific need for additional seats or use existing capacity before proceeding.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Sarah Lee is in Marketing, reports to Director David Chen.",
+        "reference": "E001"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Marketing department has $15,000 available software budget; request $8,000 is within budget, leaving $7,000 remaining.",
+        "reference": "budget:Marketing"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "TaskFlow Pro already approved company\u2011wide (SW003) with 180 seats; request for 15 seats overlaps with existing tool.",
+        "reference": "SW003"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor TaskFlow is approved in procurement and security registries; latest security review 119 days old and still current.",
+        "reference": "V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment rates TaskFlow low risk, processes personal data, stores data within region.",
+        "reference": "vendor-risk:TaskFlow"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy requires Department Head and Procurement approvals for $8,000 annual spend.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy flags existing tool overlap but does not reject; recommends confirming need versus existing capacity.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $8,000 falls in the tier requiring Department Head, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $8,000 is within Marketing's available software budget of $15,000 ($7,000 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Marketing"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: TaskFlow (SW003, Approved, Company-wide, 180 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW003"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Proceed to standard approval workflow with Department Head and Procurement.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 5815.0,
+      "rate_limit_wait_ms": 25500.0,
+      "prompt_tokens": 11261,
+      "completion_tokens": 995
+    },
+    "next_action": "route_for_approval",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "route_for_approval",
+    "recommendation": "The request is within budget and the vendor is approved, but an existing company\u2011wide license for TaskFlow already exists. Confirm the specific need for additional seats or use existing capacity before proceeding.",
+    "evidence": [
+      {
+        "ref": "E001",
+        "finding": "Requester Sarah Lee is in Marketing, reports to Director David Chen."
+      },
+      {
+        "ref": "budget:Marketing",
+        "finding": "Marketing department has $15,000 available software budget; request $8,000 is within budget, leaving $7,000 remaining."
+      },
+      {
+        "ref": "SW003",
+        "finding": "TaskFlow Pro already approved company\u2011wide (SW003) with 180 seats; request for 15 seats overlaps with existing tool."
+      },
+      {
+        "ref": "V003",
+        "finding": "Vendor TaskFlow is approved in procurement and security registries; latest security review 119 days old and still current."
+      },
+      {
+        "ref": "vendor-risk:TaskFlow",
+        "finding": "External risk assessment rates TaskFlow low risk, processes personal data, stores data within region."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy requires Department Head and Procurement approvals for $8,000 annual spend."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy flags existing tool overlap but does not reject; recommends confirming need versus existing capacity."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Proceed to standard approval workflow with Department Head and Procurement."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "route_for_approval",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 7,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

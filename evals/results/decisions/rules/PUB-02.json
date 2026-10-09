@@ -1,0 +1,100 @@
+{
+  "case_id": "PUB-02",
+  "title": "Existing alternatives + new vendor",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1002",
+    "recommendation": "Escalate for review: Reviews are required before any business approval (security review required, legal review required).",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $12,000 falls in the tier requiring Department Head, Finance, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $12,000 is within Marketing's available software budget of $15,000 ($3,000 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Marketing"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: PixelCraft Pro (SW001, Approved, Company-wide, 65 seats; same category); CreativeSuite (SW002, Approved, Marketing, 40 seats; same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW001, SW002"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "BrandBoard has procurement status 'New' in the registry (new / not fully onboarded).",
+        "reference": "policy:\u00a77, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Registry security status for BrandBoard is 'Pending'.",
+        "reference": "policy:\u00a75, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service reports BrandBoard's security review as 'not_completed'.",
+        "reference": "policy:\u00a75, vendor-risk:BrandBoard"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "New vendor with annual spend $12,000 (>= $10,000).",
+        "reference": "policy:\u00a77, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Legal terms status is 'Draft', not approved/standard.",
+        "reference": "policy:\u00a77, V011"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required"
+    ],
+    "next_step": "Send the evidence package to Security, Legal; business approvals (Department Head, Procurement, Finance) follow once those reviews clear. A reviewer should also judge whether the overlapping catalog tools already cover the need.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 0,
+      "tool_names": [],
+      "architecture": "rules",
+      "model": null,
+      "latency_ms": 19.7,
+      "rate_limit_wait_ms": 0.0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Rules-only run: no LLM was used."
+    ]
+  },
+  "model_draft": null,
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": false,
+    "draft_action": null,
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 0,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": []
+}

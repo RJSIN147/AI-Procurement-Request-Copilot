@@ -1,0 +1,75 @@
+{
+  "case_id": "EXT-10",
+  "title": "Vendor-risk outage on an otherwise trivial request",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-10",
+    "recommendation": "Escalate for review: Reviews are required before any business approval (vendor risk unavailable).",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $600 falls in the tier requiring Manager.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $600 is within Finance's available software budget of $29,000 ($28,400 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Finance"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignFlow (SW010, Approved, Company-wide, 45 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW010"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service could not be reached for SignFlow (HTTP 503: Upstream vendor assessment provider is temporarily unavailable.). Risk status is unverified - not assuming a favourable result.",
+        "reference": "policy:\u00a710, vendor-risk:SignFlow"
+      }
+    ],
+    "required_approvals": [
+      "Manager",
+      "Security"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "vendor_risk_unavailable"
+    ],
+    "next_step": "Send the evidence package to Security; business approvals (Manager) follow once those reviews clear. A reviewer should also judge whether the overlapping catalog tools already cover the need.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 0,
+      "tool_names": [],
+      "architecture": "rules",
+      "model": null,
+      "latency_ms": 305.6,
+      "rate_limit_wait_ms": 0.0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Rules-only run: no LLM was used."
+    ]
+  },
+  "model_draft": null,
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": false,
+    "draft_action": null,
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 0,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": []
+}

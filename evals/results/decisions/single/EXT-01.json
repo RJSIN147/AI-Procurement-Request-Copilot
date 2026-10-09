@@ -1,0 +1,257 @@
+{
+  "case_id": "EXT-01",
+  "title": "Approved AI vendor, new sensitive use case",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1004",
+    "recommendation": "Escalate for review: Escalate for security, privacy, and legal review due to PII handling and cross\u2011region data storage, despite budget availability.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Mia Thompson is in Customer Success department.",
+        "reference": "E005"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Annual cost $6,000 is within Customer Success's available software budget of $7,000.",
+        "reference": "budget:Customer Success"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "NeuralDesk Business (SW009) already approved, same vendor and category, limited\u2011use scope.",
+        "reference": "SW009"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor NeuralDesk is approved in procurement and security registries.",
+        "reference": "V009"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment shows medium risk, processes personal data, stores data outside region.",
+        "reference": "vendor-risk:NeuralDesk"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a74: Approval tier requires Department Head and Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a73: Existing tool overlap noted; confirm gap before new purchase.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a75: Security review required for customer_pii data.",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a76: Privacy review required for processing customer PII.",
+        "reference": "policy:\u00a76"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a78: Existing limited\u2011use approval does not cover customer PII.",
+        "reference": "policy:\u00a78"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy \u00a76 (data residency): Cross\u2011region data storage flagged.",
+        "reference": "policy:\u00a76"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $6,000 falls in the tier requiring Department Head, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $6,000 is within Customer Success's available software budget of $7,000 ($1,000 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Customer Success"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: NeuralDesk Business (SW009, Approved - limited use, Company-wide, 150 seats; same vendor + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW009"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "NeuralDesk Business is approved for limited use only; that approval does not cover 'customer_pii' data.",
+        "reference": "policy:\u00a78, SW009"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Security review required for data access level 'customer_pii'.",
+        "reference": "policy:\u00a75, request:data_access_level"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "The tool would process customer pii.",
+        "reference": "policy:\u00a76, request:data_access_level"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "NeuralDesk stores data outside the operating region and the request involves 'customer_pii' data - a material cross-region issue.",
+        "reference": "policy:\u00a76, vendor-risk:NeuralDesk"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "AI tool: normal budget, security, privacy and legal rules apply; earlier approvals do not extend to new use cases or data classes.",
+        "reference": "policy:\u00a78"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Security",
+      "Privacy",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "security_review_required",
+      "privacy_review_required",
+      "legal_review_required",
+      "cross_region_data"
+    ],
+    "next_step": "Security, Privacy, and Legal teams must conduct a detailed review of data handling, cross\u2011region storage, and compliance before any purchase can be approved.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 7568.3,
+      "rate_limit_wait_ms": 71000.0,
+      "prompt_tokens": 11735,
+      "completion_tokens": 1361
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "Escalate for security, privacy, and legal review due to PII handling and cross\u2011region data storage, despite budget availability.",
+    "evidence": [
+      {
+        "ref": "E005",
+        "finding": "Requester Mia Thompson is in Customer Success department."
+      },
+      {
+        "ref": "budget:Customer Success",
+        "finding": "Annual cost $6,000 is within Customer Success's available software budget of $7,000."
+      },
+      {
+        "ref": "SW009",
+        "finding": "NeuralDesk Business (SW009) already approved, same vendor and category, limited\u2011use scope."
+      },
+      {
+        "ref": "V009",
+        "finding": "Vendor NeuralDesk is approved in procurement and security registries."
+      },
+      {
+        "ref": "vendor-risk:NeuralDesk",
+        "finding": "External risk assessment shows medium risk, processes personal data, stores data outside region."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy \u00a74: Approval tier requires Department Head and Procurement."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy \u00a73: Existing tool overlap noted; confirm gap before new purchase."
+      },
+      {
+        "ref": "policy:\u00a75",
+        "finding": "Policy \u00a75: Security review required for customer_pii data."
+      },
+      {
+        "ref": "policy:\u00a76",
+        "finding": "Policy \u00a76: Privacy review required for processing customer PII."
+      },
+      {
+        "ref": "policy:\u00a78",
+        "finding": "Policy \u00a78: Existing limited\u2011use approval does not cover customer PII."
+      },
+      {
+        "ref": "policy:\u00a76",
+        "finding": "Policy \u00a76 (data residency): Cross\u2011region data storage flagged."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Security",
+      "Privacy",
+      "Legal"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "security_review_required",
+      "privacy_review_required",
+      "legal_review_required",
+      "cross_region_data"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Security, Privacy, and Legal teams must conduct a detailed review of data handling, cross\u2011region storage, and compliance before any purchase can be approved."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 11,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {
+        "vendor_name": "NeuralDesk"
+      }
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {
+        "vendor_name": "NeuralDesk"
+      }
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

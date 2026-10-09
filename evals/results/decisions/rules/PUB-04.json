@@ -1,0 +1,119 @@
+{
+  "case_id": "PUB-04",
+  "title": "Budget shortfall + new sensitive vendor",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1005",
+    "recommendation": "Escalate for review: Reviews are required before any business approval (budget insufficient, security review required, privacy review required, legal review required).",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $22,000 falls in the tier requiring Department Head, Finance, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $22,000 exceeds Sales's available software budget of $18,000 (shortfall $4,000); Finance budget-exception review needed.",
+        "reference": "policy:\u00a72, budget:Sales"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "GrowthForge has procurement status 'New' in the registry (new / not fully onboarded).",
+        "reference": "policy:\u00a77, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Registry security status for GrowthForge is 'Pending'.",
+        "reference": "policy:\u00a75, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service reports GrowthForge's security review as 'not_completed'.",
+        "reference": "policy:\u00a75, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service rates GrowthForge as high risk.",
+        "reference": "policy:\u00a75, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Security review required for data access level 'customer_pii'.",
+        "reference": "policy:\u00a75, request:data_access_level"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "The tool would process customer pii.",
+        "reference": "policy:\u00a76, request:data_access_level"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "GrowthForge stores data outside the operating region and the request involves 'customer_pii' data - a material cross-region issue.",
+        "reference": "policy:\u00a76, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "New vendor with annual spend $22,000 (>= $10,000).",
+        "reference": "policy:\u00a77, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Legal terms status is 'Unknown', not approved/standard.",
+        "reference": "policy:\u00a77, V012"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Privacy",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_insufficient",
+      "new_vendor",
+      "security_review_required",
+      "high_vendor_risk",
+      "privacy_review_required",
+      "legal_review_required",
+      "cross_region_data"
+    ],
+    "next_step": "Send the evidence package to Security, Privacy, Legal, Finance; business approvals (Department Head, Procurement, Finance) follow once those reviews clear.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 0,
+      "tool_names": [],
+      "architecture": "rules",
+      "model": null,
+      "latency_ms": 18.6,
+      "rate_limit_wait_ms": 0.0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Rules-only run: no LLM was used."
+    ]
+  },
+  "model_draft": null,
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": false,
+    "draft_action": null,
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 0,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": []
+}

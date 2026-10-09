@@ -1,0 +1,220 @@
+{
+  "case_id": "PUB-01",
+  "title": "Low-value approved vendor",
+  "expected_next_action": [
+    "route_for_approval",
+    "use_existing_tool"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1001",
+    "recommendation": "Route for approval: The request meets budget and security criteria, but the product already exists in the company\u2011wide catalog (45 seats). Recommend confirming that the additional three signing identities cannot be satisfied by existing capacity before proceeding. Route to the Manager for standard approval.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester profile: Noah Williams, Finance, IC4, UK, manager Priya Shah.",
+        "reference": "E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Finance department has $29,000 available; request $800 is within budget.",
+        "reference": "budget:Finance"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Approved software catalog contains SignFlow (E-signature) with 45 licensed seats, company\u2011wide agreement.",
+        "reference": "SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor registry record shows SignFlow procurement, security, and legal status all Approved; security review current (2026\u201106\u201120).",
+        "reference": "V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment rates SignFlow low risk; processes personal data but stores data within region.",
+        "reference": "vendor-risk:SignFlow"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy check: Annual amount $800 requires Manager approval (policy:\u00a74).",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy check: Existing catalog software overlaps with request (SignFlow, SW010); flag existing_tool_overlap.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $800 falls in the tier requiring Manager.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $800 is within Finance's available software budget of $29,000 ($28,200 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Finance"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignFlow (SW010, Approved, Company-wide, 45 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW010"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Manager review of request REQ-1001",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 8,
+      "tool_calls": 7,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "search_software_catalog",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 10174.4,
+      "rate_limit_wait_ms": 74000.0,
+      "prompt_tokens": 8668,
+      "completion_tokens": 1316
+    },
+    "next_action": "route_for_approval",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "route_for_approval",
+    "recommendation": "The request meets budget and security criteria, but the product already exists in the company\u2011wide catalog (45 seats). Recommend confirming that the additional three signing identities cannot be satisfied by existing capacity before proceeding. Route to the Manager for standard approval.",
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester profile: Noah Williams, Finance, IC4, UK, manager Priya Shah."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department has $29,000 available; request $800 is within budget."
+      },
+      {
+        "ref": "SW010",
+        "finding": "Approved software catalog contains SignFlow (E-signature) with 45 licensed seats, company\u2011wide agreement."
+      },
+      {
+        "ref": "V010",
+        "finding": "Vendor registry record shows SignFlow procurement, security, and legal status all Approved; security review current (2026\u201106\u201120)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "External risk assessment rates SignFlow low risk; processes personal data but stores data within region."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy check: Annual amount $800 requires Manager approval (policy:\u00a74)."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy check: Existing catalog software overlaps with request (SignFlow, SW010); flag existing_tool_overlap."
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Manager review of request REQ-1001"
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Finance requires three additional signing identities for quarter-end vendor agreements, using the SignFlow e\u2011signature add\u2011on.",
+    "existing_tools": [
+      {
+        "ref": "SW010",
+        "covers_need": "yes",
+        "note": "SignFlow is already approved company-wide with 45 licensed seats, likely sufficient to cover the three additional signing identities requested."
+      }
+    ],
+    "budget": "Within Finance department budget (available $29,000, request $800).",
+    "vendor_status": "Approved (procurement, security, legal) with low external risk.",
+    "data_and_integrations": "Data access level: internal_documents. No requested integrations.",
+    "gaps_or_conflicts": [],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester profile: Noah Williams, Finance, IC4, UK, manager Priya Shah."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department has $29,000 available; request $800 is within budget."
+      },
+      {
+        "ref": "SW010",
+        "finding": "Approved software catalog contains SignFlow (E-signature) from vendor SignFlow, company-wide license with 45 seats, recent purchase $16,000 on 2026-07-04."
+      },
+      {
+        "ref": "V010",
+        "finding": "Vendor registry record shows SignFlow procurement, security, and legal status all Approved; last security review 2026-06-20 (102 days old, still current)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "External risk assessment rates SignFlow low risk, security review approved, processes personal data, stores data within region."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "route_for_approval",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 7,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {
+        "query": "e-signature"
+      }
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

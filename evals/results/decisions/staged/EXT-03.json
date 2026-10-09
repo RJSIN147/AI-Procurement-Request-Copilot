@@ -1,0 +1,224 @@
+{
+  "case_id": "EXT-03",
+  "title": "Existing company-wide tool already covers the need",
+  "expected_next_action": [
+    "use_existing_tool"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1008",
+    "recommendation": "Escalate for review: Reviews are required before any business approval (privacy review required).",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Sarah Lee is in Marketing, IC4, based in India, manager David Chen.",
+        "reference": "E001"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Marketing department has $15,000 available software budget; request $8,000 is within budget, $7,000 remaining.",
+        "reference": "budget:Marketing"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Software catalog contains approved product TaskFlow (SW003) with 180 company\u2011wide seats, covering the same product, vendor and category.",
+        "reference": "SW003"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor TaskFlow is approved for procurement and security; last security review 2026\u201106\u201103 (119 days old, still current).",
+        "reference": "V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor risk assessment rates TaskFlow low risk; processes personal data but does not store data outside the region.",
+        "reference": "vendor-risk:TaskFlow"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy check flags existing_tool_overlap and requires Department Head + Procurement approvals (policy \u00a74).",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "policy_document",
+        "finding": "Privacy review is required because the tool will process internal marketing data that includes employee personal data (policy \u00a76).",
+        "reference": "policy:\u00a76"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $8,000 falls in the tier requiring Department Head, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $8,000 is within Marketing's available software budget of $15,000 ($7,000 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Marketing"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: TaskFlow (SW003, Approved, Company-wide, 180 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW003"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Privacy"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "privacy_review_required"
+    ],
+    "next_step": "Send the evidence package to Privacy; business approvals (Department Head, Procurement) follow once those reviews clear.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 9082.2,
+      "rate_limit_wait_ms": 61000.0,
+      "prompt_tokens": 10086,
+      "completion_tokens": 2074
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [
+      "Is there a documented gap that justifies acquiring additional TaskFlow seats rather than using the existing company\u2011wide license?"
+    ],
+    "guardrail_notes": [
+      "Next action changed from route_for_approval to escalate_for_review (blocking reviews: Privacy)."
+    ]
+  },
+  "model_draft": {
+    "next_action": "route_for_approval",
+    "recommendation": "The request meets budget and security criteria but overlaps with an existing approved product. Privacy review is required. Route for standard approvals and verify the need for additional seats.",
+    "evidence": [
+      {
+        "ref": "E001",
+        "finding": "Requester Sarah Lee is in Marketing, IC4, based in India, manager David Chen."
+      },
+      {
+        "ref": "budget:Marketing",
+        "finding": "Marketing department has $15,000 available software budget; request $8,000 is within budget, $7,000 remaining."
+      },
+      {
+        "ref": "SW003",
+        "finding": "Software catalog contains approved product TaskFlow (SW003) with 180 company\u2011wide seats, covering the same product, vendor and category."
+      },
+      {
+        "ref": "V003",
+        "finding": "Vendor TaskFlow is approved for procurement and security; last security review 2026\u201106\u201103 (119 days old, still current)."
+      },
+      {
+        "ref": "vendor-risk:TaskFlow",
+        "finding": "Vendor risk assessment rates TaskFlow low risk; processes personal data but does not store data outside the region."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy check flags existing_tool_overlap and requires Department Head + Procurement approvals (policy \u00a74)."
+      },
+      {
+        "ref": "policy:\u00a76",
+        "finding": "Privacy review is required because the tool will process internal marketing data that includes employee personal data (policy \u00a76)."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Privacy"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "privacy_review_required"
+    ],
+    "missing_information": [],
+    "open_questions": [
+      "Is there a documented gap that justifies acquiring additional TaskFlow seats rather than using the existing company\u2011wide license?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Department Head, Procurement and Privacy teams to review the request; consider using existing TaskFlow capacity before purchasing new seats."
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Marketing department requires a task tracking tool for campaign launches; needs SSO integration and internal marketing data handling for 15 users.",
+    "existing_tools": [
+      {
+        "ref": "SW003",
+        "covers_need": "yes",
+        "note": "TaskFlow is the same product requested, already approved company-wide with sufficient seats (180 > 15) and matches category and vendor; fully covers the marketing task tracking need."
+      }
+    ],
+    "budget": "Marketing department has $15,000 available after commitments; request for $8,000 is within budget.",
+    "vendor_status": "Approved (procurement, security, legal) with low risk assessment.",
+    "data_and_integrations": "Requested integration: SSO. Data access level internal_marketing; vendor processes personal data but stores within region.",
+    "gaps_or_conflicts": [],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E001",
+        "finding": "Requester Sarah Lee is in Marketing, level IC4, based in India, manager David Chen."
+      },
+      {
+        "ref": "budget:Marketing",
+        "finding": "Marketing department annual software budget $180,000; $165,000 committed; $15,000 available; request $8,000 within budget, $7,000 remaining."
+      },
+      {
+        "ref": "SW003",
+        "finding": "Software catalog contains approved product TaskFlow (SW003) from vendor TaskFlow, category Project Management, company-wide license 180 seats, annual cost $36,000, purchase history PO-2501 (Operations, 2026-06-22)."
+      },
+      {
+        "ref": "V003",
+        "finding": "Vendor registry record shows TaskFlow approved for procurement and security, last security review 2026-06-03 (119 days old, still current), legal terms approved."
+      },
+      {
+        "ref": "vendor-risk:TaskFlow",
+        "finding": "External risk assessment rates TaskFlow low risk, security review approved, processes personal data, does not store data outside region."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "route_for_approval",
+    "action_overridden": true,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 7,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

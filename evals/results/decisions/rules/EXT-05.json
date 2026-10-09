@@ -1,0 +1,72 @@
+{
+  "case_id": "EXT-05",
+  "title": "Above $25k and over budget",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-05",
+    "recommendation": "Escalate for review: Reviews are required before any business approval (budget insufficient).",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $31,000 falls in the tier requiring Department Head, Finance, CFO, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $31,000 exceeds Engineering's available software budget of $26,000 (shortfall $5,000); Finance budget-exception review needed.",
+        "reference": "policy:\u00a72, budget:Engineering"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: MetricLoop (SW006, Approved, Company-wide, 55 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW006"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "CFO"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_insufficient",
+      "existing_tool_overlap"
+    ],
+    "next_step": "Send the evidence package to Finance; business approvals (Department Head, Procurement, Finance, CFO) follow once those reviews clear. A reviewer should also judge whether the overlapping catalog tools already cover the need.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 0,
+      "tool_names": [],
+      "architecture": "rules",
+      "model": null,
+      "latency_ms": 6.8,
+      "rate_limit_wait_ms": 0.0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Rules-only run: no LLM was used."
+    ]
+  },
+  "model_draft": null,
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": false,
+    "draft_action": null,
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 0,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": []
+}

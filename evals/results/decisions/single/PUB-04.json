@@ -1,0 +1,251 @@
+{
+  "case_id": "PUB-04",
+  "title": "Budget shortfall + new sensitive vendor",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1005",
+    "recommendation": "Escalate for review: The request cannot proceed without addressing budget shortfall, high vendor risk, cross\u2011region data handling, and pending security, privacy, and legal reviews.",
+    "evidence": [
+      {
+        "source": "check_department_budget",
+        "finding": "Annual amount $22,000 exceeds Sales's available software budget of $18,000 (shortfall $4,000).",
+        "reference": "budget:Sales"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "GrowthForge has procurement status 'New' in the registry (new / not fully onboarded).",
+        "reference": "V012"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry security status for GrowthForge is 'Pending'.",
+        "reference": "V012"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service reports GrowthForge's security review as 'not_completed' and rates it as high risk.",
+        "reference": "vendor-risk:GrowthForge"
+      },
+      {
+        "source": "purchase_request",
+        "finding": "Security review required for data access level 'customer_pii'.",
+        "reference": "request:data_access_level"
+      },
+      {
+        "source": "purchase_request",
+        "finding": "The tool would process customer PII, triggering privacy review.",
+        "reference": "request:data_access_level"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "GrowthForge stores data outside the operating region, creating a cross\u2011region data issue.",
+        "reference": "vendor-risk:GrowthForge"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Legal terms status is 'Unknown' for a new vendor with spend >= $10,000.",
+        "reference": "V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $22,000 falls in the tier requiring Department Head, Finance, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $22,000 exceeds Sales's available software budget of $18,000 (shortfall $4,000); Finance budget-exception review needed.",
+        "reference": "policy:\u00a72, budget:Sales"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "GrowthForge has procurement status 'New' in the registry (new / not fully onboarded).",
+        "reference": "policy:\u00a77, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Registry security status for GrowthForge is 'Pending'.",
+        "reference": "policy:\u00a75, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service reports GrowthForge's security review as 'not_completed'.",
+        "reference": "policy:\u00a75, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service rates GrowthForge as high risk.",
+        "reference": "policy:\u00a75, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Security review required for data access level 'customer_pii'.",
+        "reference": "policy:\u00a75, request:data_access_level"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "The tool would process customer pii.",
+        "reference": "policy:\u00a76, request:data_access_level"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "GrowthForge stores data outside the operating region and the request involves 'customer_pii' data - a material cross-region issue.",
+        "reference": "policy:\u00a76, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "New vendor with annual spend $22,000 (>= $10,000).",
+        "reference": "policy:\u00a77, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Legal terms status is 'Unknown', not approved/standard.",
+        "reference": "policy:\u00a77, V012"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Privacy",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_insufficient",
+      "new_vendor",
+      "security_review_required",
+      "high_vendor_risk",
+      "privacy_review_required",
+      "legal_review_required",
+      "cross_region_data"
+    ],
+    "next_step": "Security, Privacy, Legal, and Finance teams must conduct reviews and approve a budget exception before any further action.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 8356.7,
+      "rate_limit_wait_ms": 67500.0,
+      "prompt_tokens": 11112,
+      "completion_tokens": 1151
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "The request cannot proceed without addressing budget shortfall, high vendor risk, cross\u2011region data handling, and pending security, privacy, and legal reviews.",
+    "evidence": [
+      {
+        "ref": "budget:Sales",
+        "finding": "Annual amount $22,000 exceeds Sales's available software budget of $18,000 (shortfall $4,000)."
+      },
+      {
+        "ref": "V012",
+        "finding": "GrowthForge has procurement status 'New' in the registry (new / not fully onboarded)."
+      },
+      {
+        "ref": "V012",
+        "finding": "Registry security status for GrowthForge is 'Pending'."
+      },
+      {
+        "ref": "vendor-risk:GrowthForge",
+        "finding": "Vendor-risk service reports GrowthForge's security review as 'not_completed' and rates it as high risk."
+      },
+      {
+        "ref": "request:data_access_level",
+        "finding": "Security review required for data access level 'customer_pii'."
+      },
+      {
+        "ref": "request:data_access_level",
+        "finding": "The tool would process customer PII, triggering privacy review."
+      },
+      {
+        "ref": "vendor-risk:GrowthForge",
+        "finding": "GrowthForge stores data outside the operating region, creating a cross\u2011region data issue."
+      },
+      {
+        "ref": "V012",
+        "finding": "Legal terms status is 'Unknown' for a new vendor with spend >= $10,000."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Privacy",
+      "Legal"
+    ],
+    "risk_flags": [
+      "budget_insufficient",
+      "new_vendor",
+      "security_review_required",
+      "high_vendor_risk",
+      "privacy_review_required",
+      "legal_review_required",
+      "cross_region_data"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Security, Privacy, Legal, and Finance teams must conduct reviews and approve a budget exception before any further action."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 8,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {
+        "vendor_name": "GrowthForge"
+      }
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {
+        "vendor_name": "GrowthForge"
+      }
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

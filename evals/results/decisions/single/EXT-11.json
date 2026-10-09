@@ -1,0 +1,187 @@
+{
+  "case_id": "EXT-11",
+  "title": "Business purpose filled in but unusable",
+  "expected_next_action": [
+    "request_clarification"
+  ],
+  "minimum_check_failures": [
+    "missing-info item absent (expected one of: ['purpose', 'justification', 'business need', 'use case'])"
+  ],
+  "decision": {
+    "request_id": "EXT-11",
+    "recommendation": "Route for approval: Route for Manager approval, but first confirm whether the existing company-wide SignFlow license can cover the two users, as it already provides 45 seats.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams is in Finance department, level IC4, manager Priya Shah.",
+        "reference": "E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Finance department has $29,000 available software budget; request $900 within budget.",
+        "reference": "budget:Finance"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Company-wide approved SignFlow license (SW010) with 45 seats already exists.",
+        "reference": "SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor SignFlow is approved in procurement and security, last review 2026-06-20 (102 days old).",
+        "reference": "V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment rates SignFlow low risk, processes personal data, stores data within region.",
+        "reference": "vendor-risk:SignFlow"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy requires Manager approval for $900 amount.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy notes existing tool overlap; not a rejection but suggests using existing capacity.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy confirms budget is sufficient; no blocker.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $900 falls in the tier requiring Manager.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $900 is within Finance's available software budget of $29,000 ($28,100 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Finance"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignFlow (SW010, Approved, Company-wide, 45 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW010"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Obtain Manager approval and verify if existing SignFlow seats can satisfy the request before purchasing additional licenses.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 6465.0,
+      "rate_limit_wait_ms": 45500.0,
+      "prompt_tokens": 11187,
+      "completion_tokens": 1023
+    },
+    "next_action": "route_for_approval",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "route_for_approval",
+    "recommendation": "Route for Manager approval, but first confirm whether the existing company-wide SignFlow license can cover the two users, as it already provides 45 seats.",
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester Noah Williams is in Finance department, level IC4, manager Priya Shah."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department has $29,000 available software budget; request $900 within budget."
+      },
+      {
+        "ref": "SW010",
+        "finding": "Company-wide approved SignFlow license (SW010) with 45 seats already exists."
+      },
+      {
+        "ref": "V010",
+        "finding": "Vendor SignFlow is approved in procurement and security, last review 2026-06-20 (102 days old)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "External risk assessment rates SignFlow low risk, processes personal data, stores data within region."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy requires Manager approval for $900 amount."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy notes existing tool overlap; not a rejection but suggests using existing capacity."
+      },
+      {
+        "ref": "policy:\u00a72",
+        "finding": "Policy confirms budget is sufficient; no blocker."
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Obtain Manager approval and verify if existing SignFlow seats can satisfy the request before purchasing additional licenses."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "route_for_approval",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 8,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

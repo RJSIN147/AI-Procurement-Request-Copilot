@@ -1,0 +1,219 @@
+{
+  "case_id": "PUB-02",
+  "title": "Existing alternatives + new vendor",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1002",
+    "recommendation": "Escalate for review: Escalate for security and legal review due to new vendor status and pending risk assessments.",
+    "evidence": [
+      {
+        "source": "check_department_budget",
+        "finding": "Annual cost $12,000 is within Marketing's available software budget of $15,000.",
+        "reference": "budget:Marketing"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Existing approved tools in the same category: PixelCraft Pro (SW001) and CreativeSuite (SW002).",
+        "reference": "SW001"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Existing approved tools in the same category: PixelCraft Pro (SW001) and CreativeSuite (SW002).",
+        "reference": "SW002"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor registry shows BrandBoard as a new vendor with procurement status 'New' and security status 'Pending'.",
+        "reference": "V011"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment reports BrandBoard security review not completed, medium risk, processes personal data.",
+        "reference": "vendor-risk:BrandBoard"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy requires Department Head, Procurement, Finance, Security, and Legal approvals for $12,000 spend.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy flags: existing_tool_overlap, new_vendor, security_review_required, legal_review_required.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $12,000 falls in the tier requiring Department Head, Finance, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $12,000 is within Marketing's available software budget of $15,000 ($3,000 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Marketing"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: PixelCraft Pro (SW001, Approved, Company-wide, 65 seats; same category); CreativeSuite (SW002, Approved, Marketing, 40 seats; same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW001, SW002"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "BrandBoard has procurement status 'New' in the registry (new / not fully onboarded).",
+        "reference": "policy:\u00a77, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Registry security status for BrandBoard is 'Pending'.",
+        "reference": "policy:\u00a75, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service reports BrandBoard's security review as 'not_completed'.",
+        "reference": "policy:\u00a75, vendor-risk:BrandBoard"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "New vendor with annual spend $12,000 (>= $10,000).",
+        "reference": "policy:\u00a77, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Legal terms status is 'Draft', not approved/standard.",
+        "reference": "policy:\u00a77, V011"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required"
+    ],
+    "next_step": "Security and Legal teams must complete a full security review and finalize legal terms for BrandBoard before any purchase can proceed.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 9994.6,
+      "rate_limit_wait_ms": 55000.0,
+      "prompt_tokens": 12148,
+      "completion_tokens": 1135
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "Escalate for security and legal review due to new vendor status and pending risk assessments.",
+    "evidence": [
+      {
+        "ref": "budget:Marketing",
+        "finding": "Annual cost $12,000 is within Marketing's available software budget of $15,000."
+      },
+      {
+        "ref": "SW001",
+        "finding": "Existing approved tools in the same category: PixelCraft Pro (SW001) and CreativeSuite (SW002)."
+      },
+      {
+        "ref": "SW002",
+        "finding": "Existing approved tools in the same category: PixelCraft Pro (SW001) and CreativeSuite (SW002)."
+      },
+      {
+        "ref": "V011",
+        "finding": "Vendor registry shows BrandBoard as a new vendor with procurement status 'New' and security status 'Pending'."
+      },
+      {
+        "ref": "vendor-risk:BrandBoard",
+        "finding": "External risk assessment reports BrandBoard security review not completed, medium risk, processes personal data."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy requires Department Head, Procurement, Finance, Security, and Legal approvals for $12,000 spend."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy flags: existing_tool_overlap, new_vendor, security_review_required, legal_review_required."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Security and Legal teams must complete a full security review and finalize legal terms for BrandBoard before any purchase can proceed."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 7,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {
+        "vendor_name": "BrandBoard"
+      }
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {
+        "vendor_name": "BrandBoard"
+      }
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

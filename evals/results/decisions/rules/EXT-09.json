@@ -1,0 +1,81 @@
+{
+  "case_id": "EXT-09",
+  "title": "Vague request with cost only hinted in text",
+  "expected_next_action": [
+    "request_clarification"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-09",
+    "recommendation": "Request clarification: The request is incomplete, so it cannot be assessed for approval yet.",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Request is not ready for approval; missing: Annual cost (or a reasonable annual estimate).",
+        "reference": "policy:\u00a71"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Approval tier cannot be set until an annual cost is provided; Procurement to triage.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Budget check pending: no annual cost given (Sales has $18,000 available).",
+        "reference": "policy:\u00a72, budget:Sales"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: NeuralDesk Business (SW009, Approved - limited use, Company-wide, 150 seats; same vendor + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW009"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "AI tool: normal budget, security, privacy and legal rules apply; earlier approvals do not extend to new use cases or data classes.",
+        "reference": "policy:\u00a78"
+      }
+    ],
+    "required_approvals": [
+      "Procurement"
+    ],
+    "missing_information": [
+      "Annual cost (or a reasonable annual estimate)"
+    ],
+    "risk_flags": [
+      "missing_information",
+      "existing_tool_overlap"
+    ],
+    "next_step": "Return the request to the requester for: Annual cost (or a reasonable annual estimate). Re-run the review once it is complete.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 0,
+      "tool_names": [],
+      "architecture": "rules",
+      "model": null,
+      "latency_ms": 9.0,
+      "rate_limit_wait_ms": 0.0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "next_action": "request_clarification",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Rules-only run: no LLM was used."
+    ]
+  },
+  "model_draft": null,
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": false,
+    "draft_action": null,
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 0,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": []
+}

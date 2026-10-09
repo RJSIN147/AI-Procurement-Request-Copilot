@@ -1,0 +1,211 @@
+{
+  "case_id": "EXT-10",
+  "title": "Vendor-risk outage on an otherwise trivial request",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-10",
+    "recommendation": "Escalate for review: Escalate for security review due to unavailable vendor risk assessment and overlapping existing tool; manager approval is also required before proceeding.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester profile: Noah Williams, Finance, IC4, United Kingdom, manager Priya Shah.",
+        "reference": "E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Finance department software budget $90,000 annual, $61,000 already committed, $29,000 available; request $600 within budget.",
+        "reference": "budget:Finance"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Approved software catalog entry SW010: SignFlow, E-signature category, company\u2011wide approved, 45 seats, $16,000 annual cost, purchased by Finance on 2026\u201107\u201104.",
+        "reference": "SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor registry record V010: SignFlow procurement, security, and legal status all Approved; last security review 2026\u201106\u201120 (102 days old, within policy review window).",
+        "reference": "V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External vendor risk assessment unavailable (HTTP 503 error).",
+        "reference": "vendor-risk:SignFlow"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $600 falls in the tier requiring Manager.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $600 is within Finance's available software budget of $29,000 ($28,400 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Finance"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignFlow (SW010, Approved, Company-wide, 45 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW010"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service could not be reached for SignFlow (HTTP 503: Upstream vendor assessment provider is temporarily unavailable.). Risk status is unverified - not assuming a favourable result.",
+        "reference": "policy:\u00a710, vendor-risk:SignFlow"
+      }
+    ],
+    "required_approvals": [
+      "Manager",
+      "Security"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "vendor_risk_unavailable",
+      "security_review_required"
+    ],
+    "next_step": "Security team must perform a manual vendor risk assessment and determine whether the existing SignFlow license can satisfy the template use case before any purchase proceeds.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 11174.0,
+      "rate_limit_wait_ms": 69000.0,
+      "prompt_tokens": 10000,
+      "completion_tokens": 2105
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [
+      "Can the existing SignFlow license (SW010) provide the required reusable signing template functionality, or is an additional add\u2011on truly needed?"
+    ],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "Escalate for security review due to unavailable vendor risk assessment and overlapping existing tool; manager approval is also required before proceeding.",
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester profile: Noah Williams, Finance, IC4, United Kingdom, manager Priya Shah."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department software budget $90,000 annual, $61,000 already committed, $29,000 available; request $600 within budget."
+      },
+      {
+        "ref": "SW010",
+        "finding": "Approved software catalog entry SW010: SignFlow, E-signature category, company\u2011wide approved, 45 seats, $16,000 annual cost, purchased by Finance on 2026\u201107\u201104."
+      },
+      {
+        "ref": "V010",
+        "finding": "Vendor registry record V010: SignFlow procurement, security, and legal status all Approved; last security review 2026\u201106\u201120 (102 days old, within policy review window)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "External vendor risk assessment unavailable (HTTP 503 error)."
+      }
+    ],
+    "required_approvals": [
+      "Manager",
+      "Security"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "vendor_risk_unavailable",
+      "security_review_required"
+    ],
+    "missing_information": [],
+    "open_questions": [
+      "Can the existing SignFlow license (SW010) provide the required reusable signing template functionality, or is an additional add\u2011on truly needed?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Security team must perform a manual vendor risk assessment and determine whether the existing SignFlow license can satisfy the template use case before any purchase proceeds."
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Finance requires reusable signing templates for standard supplier agreements, to be used with SignFlow e-signature solution.",
+    "existing_tools": [
+      {
+        "ref": "SW010",
+        "covers_need": "partly",
+        "note": "Existing approved SignFlow product (SW010) matches vendor, product, and category; likely provides e-signature capability but catalog does not explicitly confirm template functionality required."
+      }
+    ],
+    "budget": "Within Finance software budget: $29,000 available after request.",
+    "vendor_status": "SignFlow is Approved in procurement, security, and legal vendor registry (V010). External risk assessment unavailable.",
+    "data_and_integrations": "Data access level: internal_documents. No requested integrations.",
+    "gaps_or_conflicts": [
+      "External vendor risk assessment for SignFlow could not be retrieved (service unavailable)."
+    ],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester profile: Noah Williams, Finance, IC4, United Kingdom, manager Priya Shah."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department software budget $90,000 annual, $61,000 already committed, $29,000 available; request $600 within budget."
+      },
+      {
+        "ref": "SW010",
+        "finding": "Approved software catalog entry SW010: SignFlow, E-signature category, company-wide approved, 45 seats, $16,000 annual cost, purchased by Finance on 2026-07-04."
+      },
+      {
+        "ref": "V010",
+        "finding": "Vendor registry record V010: SignFlow procurement, security, and legal status all Approved; last security review 2026-06-20 (102 days old, within policy review window)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "External vendor risk assessment unavailable (HTTP 503 error)."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 5,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "case_id": "PUB-01",
+  "title": "Low-value approved vendor",
+  "expected_next_action": [
+    "route_for_approval",
+    "use_existing_tool"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1001",
+    "recommendation": "Use existing tool first: The request overlaps with an existing approved SignFlow deployment. Verify seat availability before proceeding with a new purchase.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams is in Finance, reports to Director Priya Shah.",
+        "reference": "E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Finance department has $29,000 available software budget; $800 request is within budget.",
+        "reference": "budget:Finance"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Company\u2011wide approved SignFlow license (SW010) already provides 45 seats at $16,000 annual cost.",
+        "reference": "SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor SignFlow is approved in the internal vendor registry (procurement, security, legal).",
+        "reference": "V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment rates SignFlow as low risk, processes personal data, stores data within region.",
+        "reference": "vendor-risk:SignFlow"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "$800 annual amount requires Manager approval per policy \u00a74.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Cost is within budget per policy \u00a72 (not a blocker).",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing approved SignFlow license overlaps with request; overlap is not a rejection but should be verified per policy \u00a73.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $800 falls in the tier requiring Manager.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $800 is within Finance's available software budget of $29,000 ($28,200 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Finance"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignFlow (SW010, Approved, Company-wide, 45 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW010"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Confirm with the requester whether the existing SignFlow license (SW010) can accommodate the three additional signing identities, or if additional seats need to be purchased.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 8,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 9259.9,
+      "rate_limit_wait_ms": 42500.0,
+      "prompt_tokens": 9114,
+      "completion_tokens": 518
+    },
+    "next_action": "use_existing_tool",
+    "open_questions": [
+      "Are there unused seats available in the current SignFlow license for Finance?",
+      "If not, does Finance require a separate add\u2011on purchase, or can the existing agreement be amended?"
+    ],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "use_existing_tool",
+    "recommendation": "The request overlaps with an existing approved SignFlow deployment. Verify seat availability before proceeding with a new purchase.",
+    "evidence": [
+      {
+        "ref": "E004",
+        "finding": "Requester Noah Williams is in Finance, reports to Director Priya Shah."
+      },
+      {
+        "ref": "budget:Finance",
+        "finding": "Finance department has $29,000 available software budget; $800 request is within budget."
+      },
+      {
+        "ref": "SW010",
+        "finding": "Company\u2011wide approved SignFlow license (SW010) already provides 45 seats at $16,000 annual cost."
+      },
+      {
+        "ref": "V010",
+        "finding": "Vendor SignFlow is approved in the internal vendor registry (procurement, security, legal)."
+      },
+      {
+        "ref": "vendor-risk:SignFlow",
+        "finding": "External risk assessment rates SignFlow as low risk, processes personal data, stores data within region."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "$800 annual amount requires Manager approval per policy \u00a74."
+      },
+      {
+        "ref": "policy:\u00a72",
+        "finding": "Cost is within budget per policy \u00a72 (not a blocker)."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Existing approved SignFlow license overlaps with request; overlap is not a rejection but should be verified per policy \u00a73."
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "missing_information": [],
+    "open_questions": [
+      "Are there unused seats available in the current SignFlow license for Finance?",
+      "If not, does Finance require a separate add\u2011on purchase, or can the existing agreement be amended?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Confirm with the requester whether the existing SignFlow license (SW010) can accommodate the three additional signing identities, or if additional seats need to be purchased."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "use_existing_tool",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 8,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

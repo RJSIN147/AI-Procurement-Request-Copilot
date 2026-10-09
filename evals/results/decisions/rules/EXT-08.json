@@ -1,0 +1,70 @@
+{
+  "case_id": "EXT-08",
+  "title": "Unverified approval claim in the request",
+  "expected_next_action": [
+    "use_existing_tool",
+    "route_for_approval"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-08",
+    "recommendation": "Route for approval: Evidence is complete and no specialist review is triggered.",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $4,000 falls in the tier requiring Department Head, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $4,000 is within Marketing's available software budget of $15,000 ($11,000 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Marketing"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: PixelCraft Pro (SW001, Approved, Company-wide, 65 seats; same vendor + same product + same category); CreativeSuite (SW002, Approved, Marketing, 40 seats; same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW001, SW002"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Route to Department Head, Procurement for approval. A reviewer should also judge whether the overlapping catalog tools already cover the need.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 0,
+      "tool_names": [],
+      "architecture": "rules",
+      "model": null,
+      "latency_ms": 8.5,
+      "rate_limit_wait_ms": 0.0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "next_action": "route_for_approval",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Rules-only run: no LLM was used."
+    ]
+  },
+  "model_draft": null,
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": false,
+    "draft_action": null,
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 0,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": []
+}

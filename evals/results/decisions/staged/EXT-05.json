@@ -1,0 +1,212 @@
+{
+  "case_id": "EXT-05",
+  "title": "Above $25k and over budget",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-05",
+    "recommendation": "Escalate for review: The request exceeds the Engineering department's available software budget and overlaps with an existing approved MetricLoop license; it should be escalated for a budget exception and assessment of using existing capacity before proceeding.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester profile retrieved: Arjun Mehta, Engineering, IC5, India, manager Maya Rao.",
+        "reference": "E002"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Engineering software budget: $300,000 annual, $274,000 committed, $26,000 available; request $31,000 exceeds available budget.",
+        "reference": "budget:Engineering"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Software catalog contains approved MetricLoop (SW006) with 55 seats, same vendor/product/category as request.",
+        "reference": "SW006"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor registry shows MetricLoop approved for procurement and security, last reviewed 2026-05-10 (143 days old).",
+        "reference": "V006"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor risk assessment rates MetricLoop low risk; security review approved; processes personal data; stores data within region.",
+        "reference": "vendor-risk:MetricLoop"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $31,000 falls in the tier requiring Department Head, Finance, CFO, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $31,000 exceeds Engineering's available software budget of $26,000 (shortfall $5,000); Finance budget-exception review needed.",
+        "reference": "policy:\u00a72, budget:Engineering"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: MetricLoop (SW006, Approved, Company-wide, 55 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW006"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "CFO"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_insufficient",
+      "existing_tool_overlap"
+    ],
+    "next_step": "Finance budget exception review and Department Head evaluation of using existing MetricLoop seats before new purchase.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 9076.5,
+      "rate_limit_wait_ms": 69500.0,
+      "prompt_tokens": 7002,
+      "completion_tokens": 1205
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [
+      "Can the existing MetricLoop license (55 seats) satisfy the 40\u2011engineer need, or are additional seats required?"
+    ],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "The request exceeds the Engineering department's available software budget and overlaps with an existing approved MetricLoop license; it should be escalated for a budget exception and assessment of using existing capacity before proceeding.",
+    "evidence": [
+      {
+        "ref": "E002",
+        "finding": "Requester profile retrieved: Arjun Mehta, Engineering, IC5, India, manager Maya Rao."
+      },
+      {
+        "ref": "budget:Engineering",
+        "finding": "Engineering software budget: $300,000 annual, $274,000 committed, $26,000 available; request $31,000 exceeds available budget."
+      },
+      {
+        "ref": "SW006",
+        "finding": "Software catalog contains approved MetricLoop (SW006) with 55 seats, same vendor/product/category as request."
+      },
+      {
+        "ref": "V006",
+        "finding": "Vendor registry shows MetricLoop approved for procurement and security, last reviewed 2026-05-10 (143 days old)."
+      },
+      {
+        "ref": "vendor-risk:MetricLoop",
+        "finding": "Vendor risk assessment rates MetricLoop low risk; security review approved; processes personal data; stores data within region."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "CFO"
+    ],
+    "risk_flags": [
+      "budget_insufficient",
+      "existing_tool_overlap"
+    ],
+    "missing_information": [],
+    "open_questions": [
+      "Can the existing MetricLoop license (55 seats) satisfy the 40\u2011engineer need, or are additional seats required?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Finance budget exception review and Department Head evaluation of using existing MetricLoop seats before new purchase."
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Engineering needs governed dashboards for service\u2011level reporting across 40 engineers.",
+    "existing_tools": [
+      {
+        "ref": "SW006",
+        "covers_need": "yes",
+        "note": "MetricLoop (SW006) already approved company\u2011wide with 55 seats, sufficient for 40 engineers and provides dashboards/BI capabilities."
+      }
+    ],
+    "budget": "Requested $31,000 exceeds Engineering's available software budget of $26,000 (shortfall $5,000).",
+    "vendor_status": "Approved (procurement, security, legal) with low external risk.",
+    "data_and_integrations": "Data access level: internal_documents. Requested integration: SSO.",
+    "gaps_or_conflicts": [
+      "Budget shortfall: request exceeds available department budget by $5,000."
+    ],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E002",
+        "finding": "Requester profile retrieved: Arjun Mehta, Engineering, IC5, India, manager Maya Rao."
+      },
+      {
+        "ref": "budget:Engineering",
+        "finding": "Department budget check: Engineering annual software budget $300,000, committed $274,000, available $26,000; request $31,000 exceeds available budget."
+      },
+      {
+        "ref": "SW006",
+        "finding": "Software catalog contains existing approved MetricLoop product (SW006) with 55 licensed seats, covering same vendor, product, and category."
+      },
+      {
+        "ref": "V006",
+        "finding": "Vendor registry record shows MetricLoop is Approved for procurement and security, last reviewed 2026-05-10 (143 days old)."
+      },
+      {
+        "ref": "vendor-risk:MetricLoop",
+        "finding": "External vendor risk assessment rates MetricLoop as low risk, security review approved, processes personal data, stores data within region."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 5,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {
+        "vendor_name": "MetricLoop"
+      }
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {
+        "vendor_name": "MetricLoop"
+      }
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

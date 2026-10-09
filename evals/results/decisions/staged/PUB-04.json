@@ -1,0 +1,294 @@
+{
+  "case_id": "PUB-04",
+  "title": "Budget shortfall + new sensitive vendor",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1005",
+    "recommendation": "Escalate for review due to budget shortfall, high vendor risk, pending security review, and required privacy and legal assessments.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Elena Garcia is in Sales department, level IC3, based in Spain, manager Robert King.",
+        "reference": "E003"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Sales department annual software budget $220,000, committed $202,000, available $18,000; request $22,000 exceeds available budget.",
+        "reference": "budget:Sales"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor GrowthForge is a New vendor with procurement status 'New' and security status 'Pending'; no prior contract.",
+        "reference": "V012"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk assessment rates GrowthForge as high risk, security review not completed, processes personal data, stores data outside operating region.",
+        "reference": "vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $22,000 falls in the tier requiring Department Head, Finance, Procurement approvals.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Budget shortfall flagged; Finance budget\u2011exception review required.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Security review required for data access level 'customer_pii'.",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Privacy review required because the tool will process customer PII and data is stored outside the operating region.",
+        "reference": "policy:\u00a76"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Legal review required: new vendor with annual spend $22,000 (>= $10,000) and unknown legal terms status.",
+        "reference": "policy:\u00a77"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $22,000 falls in the tier requiring Department Head, Finance, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $22,000 exceeds Sales's available software budget of $18,000 (shortfall $4,000); Finance budget-exception review needed.",
+        "reference": "policy:\u00a72, budget:Sales"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "GrowthForge has procurement status 'New' in the registry (new / not fully onboarded).",
+        "reference": "policy:\u00a77, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Registry security status for GrowthForge is 'Pending'.",
+        "reference": "policy:\u00a75, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service reports GrowthForge's security review as 'not_completed'.",
+        "reference": "policy:\u00a75, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service rates GrowthForge as high risk.",
+        "reference": "policy:\u00a75, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Security review required for data access level 'customer_pii'.",
+        "reference": "policy:\u00a75, request:data_access_level"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "The tool would process customer pii.",
+        "reference": "policy:\u00a76, request:data_access_level"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "GrowthForge stores data outside the operating region and the request involves 'customer_pii' data - a material cross-region issue.",
+        "reference": "policy:\u00a76, vendor-risk:GrowthForge"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "New vendor with annual spend $22,000 (>= $10,000).",
+        "reference": "policy:\u00a77, V012"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Legal terms status is 'Unknown', not approved/standard.",
+        "reference": "policy:\u00a77, V012"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Privacy",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_insufficient",
+      "new_vendor",
+      "security_review_required",
+      "high_vendor_risk",
+      "privacy_review_required",
+      "legal_review_required",
+      "cross_region_data"
+    ],
+    "next_step": "Security, Privacy, Legal, and Finance budget\u2011exception reviews must be completed before any business approval.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 9089.0,
+      "rate_limit_wait_ms": 67000.0,
+      "prompt_tokens": 6573,
+      "completion_tokens": 1124
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Dropped 1 evidence item(s) citing refs no tool returned: search_software_catalog."
+    ]
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "Escalate for review due to budget shortfall, high vendor risk, pending security review, and required privacy and legal assessments.",
+    "evidence": [
+      {
+        "ref": "E003",
+        "finding": "Requester Elena Garcia is in Sales department, level IC3, based in Spain, manager Robert King."
+      },
+      {
+        "ref": "budget:Sales",
+        "finding": "Sales department annual software budget $220,000, committed $202,000, available $18,000; request $22,000 exceeds available budget."
+      },
+      {
+        "ref": "search_software_catalog",
+        "finding": "Software catalog search returned no existing matches for product, vendor, or category."
+      },
+      {
+        "ref": "V012",
+        "finding": "Vendor GrowthForge is a New vendor with procurement status 'New' and security status 'Pending'; no prior contract."
+      },
+      {
+        "ref": "vendor-risk:GrowthForge",
+        "finding": "Vendor-risk assessment rates GrowthForge as high risk, security review not completed, processes personal data, stores data outside operating region."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Annual amount $22,000 falls in the tier requiring Department Head, Finance, Procurement approvals."
+      },
+      {
+        "ref": "policy:\u00a72",
+        "finding": "Budget shortfall flagged; Finance budget\u2011exception review required."
+      },
+      {
+        "ref": "policy:\u00a75",
+        "finding": "Security review required for data access level 'customer_pii'."
+      },
+      {
+        "ref": "policy:\u00a76",
+        "finding": "Privacy review required because the tool will process customer PII and data is stored outside the operating region."
+      },
+      {
+        "ref": "policy:\u00a77",
+        "finding": "Legal review required: new vendor with annual spend $22,000 (>= $10,000) and unknown legal terms status."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Privacy",
+      "Legal"
+    ],
+    "risk_flags": [
+      "budget_insufficient",
+      "new_vendor",
+      "security_review_required",
+      "high_vendor_risk",
+      "privacy_review_required",
+      "legal_review_required",
+      "cross_region_data"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Security, Privacy, Legal, and Finance budget\u2011exception reviews must be completed before any business approval."
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Enrich lead records and prioritize outbound accounts for the sales team.",
+    "existing_tools": [],
+    "budget": "Requested $22,000 exceeds available $18,000 (shortfall $4,000).",
+    "vendor_status": "GrowthForge \u2013 procurement status New, security status Pending, risk level high, security review not completed.",
+    "data_and_integrations": "Data access level: customer PII. Requested integration: CRM.",
+    "gaps_or_conflicts": [
+      "Budget shortfall: requested cost exceeds available department budget."
+    ],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E003",
+        "finding": "Requester Elena Garcia is in Sales department, level IC3, based in Spain, manager Robert King."
+      },
+      {
+        "ref": "budget:Sales",
+        "finding": "Department Sales annual software budget $220,000, already committed $202,000, available $18,000; request $22,000 exceeds budget."
+      },
+      {
+        "ref": "search_software_catalog",
+        "finding": "Software catalog search returned no existing matches for product, vendor, or category."
+      },
+      {
+        "ref": "V012",
+        "finding": "Vendor registry shows GrowthForge is a New vendor with procurement status New, security status Pending, no prior contract."
+      },
+      {
+        "ref": "vendor-risk:GrowthForge",
+        "finding": "External risk assessment rates GrowthForge as high risk, security review not completed, processes personal data, stores data outside region."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 10,
+    "evidence_ungrounded": 1,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

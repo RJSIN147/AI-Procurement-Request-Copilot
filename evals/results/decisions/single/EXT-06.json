@@ -1,0 +1,179 @@
+{
+  "case_id": "EXT-06",
+  "title": "Unknown vendor and a department with no budget record",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-06",
+    "recommendation": "Escalate for review: The request cannot proceed until budget verification and vendor risk/legal assessments are completed; it should be escalated for review.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Director Robert King in Go To Market department",
+        "reference": "E007"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "No software budget record for Go To Market; budget cannot be verified",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $9,000 falls in tier requiring Department Head and Procurement approvals",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor DeckGenie not in internal vendor registry (new vendor)",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External vendor-risk service has no assessment for DeckGenie",
+        "reference": "vendor-risk:DeckGenie"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $9,000 falls in the tier requiring Department Head, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "No software budget record exists for Go To Market; available budget cannot be verified.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "DeckGenie is not in the internal vendor registry (treated as a new vendor with no security assessment or legal terms on file).",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "The vendor-risk service has no assessment on record for DeckGenie.",
+        "reference": "policy:\u00a75, vendor-risk:DeckGenie"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_unverified",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required",
+      "vendor_assessment_missing"
+    ],
+    "next_step": "Escalate to Security and Legal for vendor risk assessment and to Finance/Department Head to verify or establish a software budget for Go To Market.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 8,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 10046.5,
+      "rate_limit_wait_ms": 80000.0,
+      "prompt_tokens": 12414,
+      "completion_tokens": 1532
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "The request cannot proceed until budget verification and vendor risk/legal assessments are completed; it should be escalated for review.",
+    "evidence": [
+      {
+        "ref": "E007",
+        "finding": "Director Robert King in Go To Market department"
+      },
+      {
+        "ref": "policy:\u00a72",
+        "finding": "No software budget record for Go To Market; budget cannot be verified"
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Annual amount $9,000 falls in tier requiring Department Head and Procurement approvals"
+      },
+      {
+        "ref": "policy:\u00a75",
+        "finding": "Vendor DeckGenie not in internal vendor registry (new vendor)"
+      },
+      {
+        "ref": "vendor-risk:DeckGenie",
+        "finding": "External vendor-risk service has no assessment for DeckGenie"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "risk_flags": [
+      "budget_unverified",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required",
+      "vendor_assessment_missing"
+    ],
+    "missing_information": [],
+    "open_questions": [],
+    "suspicious_content": [],
+    "next_step": "Escalate to Security and Legal for vendor risk assessment and to Finance/Department Head to verify or establish a software budget for Go To Market."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 5,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

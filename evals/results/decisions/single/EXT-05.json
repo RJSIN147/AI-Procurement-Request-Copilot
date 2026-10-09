@@ -1,0 +1,197 @@
+{
+  "case_id": "EXT-05",
+  "title": "Above $25k and over budget",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-05",
+    "recommendation": "Escalate for review: Escalate for budget exception and tool reuse review; do not proceed to purchase until finance and department head sign off.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Arjun Mehta is in Engineering, level IC5, manager Maya Rao.",
+        "reference": "E002"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Engineering software budget: available $26,000, request $31,000 exceeds budget by $5,000.",
+        "reference": "budget:Engineering"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "MetricLoop already approved company\u2011wide with 55 seats (covers 40 users).",
+        "reference": "SW006"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor registry shows MetricLoop procurement and security status approved, last review 2026\u201105\u201110.",
+        "reference": "V006"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment rates MetricLoop low risk, processes personal data, no data residency issue.",
+        "reference": "vendor-risk:MetricLoop"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy requires Department Head, Procurement, Finance, and CFO approvals for $31,000 spend.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy flags budget insufficient and existing tool overlap as risk.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy notes existing tool overlap is not a rejection but requires confirmation of capacity.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $31,000 falls in the tier requiring Department Head, Finance, CFO, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $31,000 exceeds Engineering's available software budget of $26,000 (shortfall $5,000); Finance budget-exception review needed.",
+        "reference": "policy:\u00a72, budget:Engineering"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: MetricLoop (SW006, Approved, Company-wide, 55 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW006"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "CFO"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_insufficient",
+      "existing_tool_overlap"
+    ],
+    "next_step": "Finance and Engineering Department Head must review the $5,000 budget shortfall and evaluate using existing MetricLoop seats before any new purchase.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 10629.3,
+      "rate_limit_wait_ms": 43000.0,
+      "prompt_tokens": 11132,
+      "completion_tokens": 1324
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [
+      "Can the existing MetricLoop license (55 seats) accommodate the 40 engineers without additional cost?"
+    ],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "Escalate for budget exception and tool reuse review; do not proceed to purchase until finance and department head sign off.",
+    "evidence": [
+      {
+        "ref": "E002",
+        "finding": "Requester Arjun Mehta is in Engineering, level IC5, manager Maya Rao."
+      },
+      {
+        "ref": "budget:Engineering",
+        "finding": "Engineering software budget: available $26,000, request $31,000 exceeds budget by $5,000."
+      },
+      {
+        "ref": "SW006",
+        "finding": "MetricLoop already approved company\u2011wide with 55 seats (covers 40 users)."
+      },
+      {
+        "ref": "V006",
+        "finding": "Vendor registry shows MetricLoop procurement and security status approved, last review 2026\u201105\u201110."
+      },
+      {
+        "ref": "vendor-risk:MetricLoop",
+        "finding": "External risk assessment rates MetricLoop low risk, processes personal data, no data residency issue."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy requires Department Head, Procurement, Finance, and CFO approvals for $31,000 spend."
+      },
+      {
+        "ref": "policy:\u00a72",
+        "finding": "Policy flags budget insufficient and existing tool overlap as risk."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy notes existing tool overlap is not a rejection but requires confirmation of capacity."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "CFO"
+    ],
+    "risk_flags": [
+      "budget_insufficient",
+      "existing_tool_overlap"
+    ],
+    "missing_information": [],
+    "open_questions": [
+      "Can the existing MetricLoop license (55 seats) accommodate the 40 engineers without additional cost?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Finance and Engineering Department Head must review the $5,000 budget shortfall and evaluate using existing MetricLoop seats before any new purchase."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 8,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

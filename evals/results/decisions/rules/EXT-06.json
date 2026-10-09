@@ -1,0 +1,81 @@
+{
+  "case_id": "EXT-06",
+  "title": "Unknown vendor and a department with no budget record",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-06",
+    "recommendation": "Escalate for review: Reviews are required before any business approval (budget unverified, security review required, legal review required, vendor assessment missing).",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $9,000 falls in the tier requiring Department Head, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "No software budget record exists for Go To Market; available budget cannot be verified.",
+        "reference": "policy:\u00a72"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "DeckGenie is not in the internal vendor registry (treated as a new vendor with no security assessment or legal terms on file).",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "The vendor-risk service has no assessment on record for DeckGenie.",
+        "reference": "policy:\u00a75, vendor-risk:DeckGenie"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_unverified",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required",
+      "vendor_assessment_missing"
+    ],
+    "next_step": "Send the evidence package to Security, Legal, Finance; business approvals (Department Head, Procurement, Finance) follow once those reviews clear.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 0,
+      "tool_names": [],
+      "architecture": "rules",
+      "model": null,
+      "latency_ms": 6.2,
+      "rate_limit_wait_ms": 0.0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Rules-only run: no LLM was used."
+    ]
+  },
+  "model_draft": null,
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": false,
+    "draft_action": null,
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 0,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": []
+}

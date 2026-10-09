@@ -1,0 +1,233 @@
+{
+  "case_id": "EXT-09",
+  "title": "Vague request with cost only hinted in text",
+  "expected_next_action": [
+    "request_clarification"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "EXT-09",
+    "recommendation": "Request clarification: The request lacks a required annual cost estimate, preventing budget verification and approval tier determination. Clarify the cost and assess if the existing NeuralDesk Business license can meet the need. Security and Privacy reviews will be required due to personal data processing and cross\u2011region storage.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Elena Garcia is in Sales, level IC3, based in Spain, manager Robert King.",
+        "reference": "E003"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Sales department annual software budget $220,000; $202,000 already committed; $18,000 available. Request annual cost is null, so budget cannot be compared.",
+        "reference": "budget:Sales"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Existing approved product NeuralDesk Business (150 seats, $60,000 annual) from same vendor and category, limited\u2011use policy.",
+        "reference": "SW009"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor registry record shows NeuralDesk is Approved for procurement and security (review age 212 days, within policy reference date).",
+        "reference": "V009"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "External risk assessment for NeuralDesk: medium risk, security review approved, processes personal data, stores data outside region, requires Security and Privacy review.",
+        "reference": "vendor-risk:NeuralDesk"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Request is not ready for approval; missing: Annual cost (or a reasonable annual estimate).",
+        "reference": "policy:\u00a71"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Approval tier cannot be set until an annual cost is provided; Procurement to triage.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Budget check pending: no annual cost given (Sales has $18,000 available).",
+        "reference": "policy:\u00a72, budget:Sales"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: NeuralDesk Business (SW009, Approved - limited use, Company-wide, 150 seats; same vendor + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW009"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "AI tool: normal budget, security, privacy and legal rules apply; earlier approvals do not extend to new use cases or data classes.",
+        "reference": "policy:\u00a78"
+      }
+    ],
+    "required_approvals": [
+      "Procurement"
+    ],
+    "missing_information": [
+      "Annual cost (or a reasonable annual estimate)"
+    ],
+    "risk_flags": [
+      "missing_information",
+      "existing_tool_overlap",
+      "security_review_required",
+      "privacy_review_required"
+    ],
+    "next_step": "Procurement to request clarification on the annual cost estimate and verify whether the existing NeuralDesk Business seats can satisfy the need; initiate Security and Privacy review once cost is provided.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 8,
+      "tool_calls": 7,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 11703.9,
+      "rate_limit_wait_ms": 91000.0,
+      "prompt_tokens": 8710,
+      "completion_tokens": 1688
+    },
+    "next_action": "request_clarification",
+    "open_questions": [
+      "What is the expected annual cost (or reasonable estimate) for 5 NeuralDesk seats?",
+      "Annual cost (or a reasonable annual estimate) for the requested 5 seats"
+    ],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "request_clarification",
+    "recommendation": "The request lacks a required annual cost estimate, preventing budget verification and approval tier determination. Clarify the cost and assess if the existing NeuralDesk Business license can meet the need. Security and Privacy reviews will be required due to personal data processing and cross\u2011region storage.",
+    "evidence": [
+      {
+        "ref": "E003",
+        "finding": "Requester Elena Garcia is in Sales, level IC3, based in Spain, manager Robert King."
+      },
+      {
+        "ref": "budget:Sales",
+        "finding": "Sales department annual software budget $220,000; $202,000 already committed; $18,000 available. Request annual cost is null, so budget cannot be compared."
+      },
+      {
+        "ref": "SW009",
+        "finding": "Existing approved product NeuralDesk Business (150 seats, $60,000 annual) from same vendor and category, limited\u2011use policy."
+      },
+      {
+        "ref": "V009",
+        "finding": "Vendor registry record shows NeuralDesk is Approved for procurement and security (review age 212 days, within policy reference date)."
+      },
+      {
+        "ref": "vendor-risk:NeuralDesk",
+        "finding": "External risk assessment for NeuralDesk: medium risk, security review approved, processes personal data, stores data outside region, requires Security and Privacy review."
+      }
+    ],
+    "required_approvals": [
+      "Procurement"
+    ],
+    "risk_flags": [
+      "missing_information",
+      "existing_tool_overlap",
+      "security_review_required",
+      "privacy_review_required"
+    ],
+    "missing_information": [
+      "Annual cost (or a reasonable annual estimate) for the requested 5 seats"
+    ],
+    "open_questions": [
+      "What is the expected annual cost (or reasonable estimate) for 5 NeuralDesk seats?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Procurement to request clarification on the annual cost estimate and verify whether the existing NeuralDesk Business seats can satisfy the need; initiate Security and Privacy review once cost is provided."
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Request for 5 seats of NeuralDesk AI assistant (General AI) to work with internal_documents, no integrations, normal urgency.",
+    "existing_tools": [
+      {
+        "ref": "SW009",
+        "covers_need": "partly",
+        "note": "NeuralDesk Business provides same AI capabilities and seats exceed request, but is limited-use with sensitive data restrictions; may not fully satisfy internal_documents use without additional approval."
+      }
+    ],
+    "budget": "Department Sales has $18,000 available; request annual cost is unspecified (null), so budget comparison not possible.",
+    "vendor_status": "Approved in internal registry; external risk assessment medium risk, approved security review but requires additional Security and Privacy review due to personal data processing and data residency.",
+    "data_and_integrations": "Requested data access level: internal_documents. No integrations requested.",
+    "gaps_or_conflicts": [
+      "Request annual_cost_usd is null; cannot compare to department budget.",
+      "Vendor risk assessment indicates need for Security and Privacy review before processing internal_documents."
+    ],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E003",
+        "finding": "Requester Elena Garcia is in Sales, level IC3, based in Spain, manager Robert King."
+      },
+      {
+        "ref": "budget:Sales",
+        "finding": "Sales department annual software budget $220,000; $202,000 already committed; $18,000 available."
+      },
+      {
+        "ref": "SW009",
+        "finding": "Existing approved product NeuralDesk Business (150 seats, $60,000 annual) from same vendor and category, limited-use policy."
+      },
+      {
+        "ref": "V009",
+        "finding": "Vendor registry record shows NeuralDesk is Approved for procurement and security, review age 212 days (within policy reference date)."
+      },
+      {
+        "ref": "vendor-risk:NeuralDesk",
+        "finding": "External risk assessment for NeuralDesk: medium risk, security review approved, processes personal data, stores data outside region, requires Security and Privacy review."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "request_clarification",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 5,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {
+        "vendor_name": "NeuralDesk"
+      }
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {
+        "vendor_name": "NeuralRisk"
+      }
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {
+        "vendor_name": "NeuralDesk"
+      }
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

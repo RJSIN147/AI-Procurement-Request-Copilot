@@ -1,0 +1,264 @@
+{
+  "case_id": "PUB-02",
+  "title": "Existing alternatives + new vendor",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1002",
+    "recommendation": "Escalate for review: Escalate for security and legal review due to new vendor status, pending security assessment, and draft legal terms; also verify the need versus existing overlapping tools.",
+    "evidence": [
+      {
+        "source": "check_department_budget",
+        "finding": "Annual cost $12,000 is within Marketing's available software budget of $15,000, leaving $3,000 remaining.",
+        "reference": "budget:Marketing"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Software catalog contains PixelCraft Pro (SW001) \u2013 same category, approved company\u2011wide, 65 seats already licensed.",
+        "reference": "SW001"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "Software catalog contains CreativeSuite (SW002) \u2013 same category, approved for Marketing, 40 seats already licensed.",
+        "reference": "SW002"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor registry shows BrandBoard is New procurement status, security review pending, legal terms draft.",
+        "reference": "V011"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor\u2011risk assessment rates BrandBoard medium risk; security review not completed; processes personal data.",
+        "reference": "vendor-risk:BrandBoard"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $12,000 falls in the tier requiring Department Head, Finance, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $12,000 is within Marketing's available software budget of $15,000 ($3,000 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Marketing"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: PixelCraft Pro (SW001, Approved, Company-wide, 65 seats; same category); CreativeSuite (SW002, Approved, Marketing, 40 seats; same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW001, SW002"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "BrandBoard has procurement status 'New' in the registry (new / not fully onboarded).",
+        "reference": "policy:\u00a77, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Registry security status for BrandBoard is 'Pending'.",
+        "reference": "policy:\u00a75, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service reports BrandBoard's security review as 'not_completed'.",
+        "reference": "policy:\u00a75, vendor-risk:BrandBoard"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "New vendor with annual spend $12,000 (>= $10,000).",
+        "reference": "policy:\u00a77, V011"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Legal terms status is 'Draft', not approved/standard.",
+        "reference": "policy:\u00a77, V011"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required"
+    ],
+    "next_step": "Security and Legal teams must complete vendor security and legal reviews; also confirm whether BrandBoard provides a unique capability not covered by PixelCraft Pro or CreativeSuite before any purchase.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 7,
+      "tool_calls": 6,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_policy_rules"
+      ],
+      "architecture": "staged",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 9546.7,
+      "rate_limit_wait_ms": 82500.0,
+      "prompt_tokens": 10980,
+      "completion_tokens": 2182
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [
+      "What specific functional gap does BrandBoard fill that cannot be satisfied by the existing approved tools (PixelCraft Pro, CreativeSuite)?"
+    ],
+    "guardrail_notes": [
+      "Dropped 4 evidence item(s) citing refs no tool returned: policy:\\u00a74, policy:\\u00a73, policy:\\u00a77, policy:\\u00a75."
+    ]
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "Escalate for security and legal review due to new vendor status, pending security assessment, and draft legal terms; also verify the need versus existing overlapping tools.",
+    "evidence": [
+      {
+        "ref": "budget:Marketing",
+        "finding": "Annual cost $12,000 is within Marketing's available software budget of $15,000, leaving $3,000 remaining."
+      },
+      {
+        "ref": "SW001",
+        "finding": "Software catalog contains PixelCraft Pro (SW001) \u2013 same category, approved company\u2011wide, 65 seats already licensed."
+      },
+      {
+        "ref": "SW002",
+        "finding": "Software catalog contains CreativeSuite (SW002) \u2013 same category, approved for Marketing, 40 seats already licensed."
+      },
+      {
+        "ref": "V011",
+        "finding": "Vendor registry shows BrandBoard is New procurement status, security review pending, legal terms draft."
+      },
+      {
+        "ref": "vendor-risk:BrandBoard",
+        "finding": "Vendor\u2011risk assessment rates BrandBoard medium risk; security review not completed; processes personal data."
+      },
+      {
+        "ref": "policy:\\u00a74",
+        "finding": "Policy check: annual amount $12,000 falls in tier requiring Department Head, Finance, Procurement (policy:\\u00a74)."
+      },
+      {
+        "ref": "policy:\\u00a73",
+        "finding": "Policy check: existing catalog software overlaps with request (policy:\\u00a73)."
+      },
+      {
+        "ref": "policy:\\u00a77",
+        "finding": "Policy check: new vendor with spend >= $10,000 and draft legal terms (policy:\\u00a77)."
+      },
+      {
+        "ref": "policy:\\u00a75",
+        "finding": "Policy check: security review pending (policy:\\u00a75)."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "new_vendor",
+      "security_review_required",
+      "legal_review_required"
+    ],
+    "missing_information": [],
+    "open_questions": [
+      "What specific functional gap does BrandBoard fill that cannot be satisfied by the existing approved tools (PixelCraft Pro, CreativeSuite)?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Security and Legal teams must complete vendor security and legal reviews; also confirm whether BrandBoard provides a unique capability not covered by PixelCraft Pro or CreativeSuite before any purchase."
+  },
+  "analyst_evidence_pack": {
+    "need_summary": "Marketing needs a user\u2011friendly design tool for fast campaign\u2011template creation accessible to non\u2011designers; current solution PixelCraft is too specialist.",
+    "existing_tools": [
+      {
+        "ref": "SW001",
+        "covers_need": "partly",
+        "note": "PixelCraft Pro is a powerful design tool but noted as too specialist for non\u2011designers; may partially satisfy fast template creation."
+      },
+      {
+        "ref": "SW002",
+        "covers_need": "partly",
+        "note": "CreativeSuite is a creative production suite approved for Marketing; could support template creation but not specifically marketed for fast, non\u2011designer use."
+      }
+    ],
+    "budget": "Within budget: available $15,000, request $12,000, remaining $3,000 after approval.",
+    "vendor_status": "Vendor BrandBoard is New in procurement, security review pending, legal terms draft, external risk medium with incomplete security review and personal data processing.",
+    "data_and_integrations": "Data access level: internal_marketing. Requested integration: SSO.",
+    "gaps_or_conflicts": [],
+    "suspicious_content": [],
+    "evidence": [
+      {
+        "ref": "E001",
+        "finding": "Requester Sarah Lee is in Marketing, level IC4, based in India, manager David Chen."
+      },
+      {
+        "ref": "budget:Marketing",
+        "finding": "Marketing department has $15,000 available software budget; request $12,000 is within budget, leaving $3,000 remaining."
+      },
+      {
+        "ref": "SW001",
+        "finding": "Software catalog contains PixelCraft Pro (SW001) \u2013 same category Design & Creative, approved company-wide."
+      },
+      {
+        "ref": "SW002",
+        "finding": "Software catalog contains CreativeSuite (SW002) \u2013 same category Design & Creative, approved for Marketing."
+      },
+      {
+        "ref": "V011",
+        "finding": "Vendor registry shows BrandBoard is New procurement status, security review pending, legal terms draft."
+      },
+      {
+        "ref": "vendor-risk:BrandBoard",
+        "finding": "External risk assessment rates BrandBoard medium risk, security review not completed, processes personal data, stores data within region."
+      }
+    ]
+  },
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 9,
+    "evidence_ungrounded": 4,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_risk_assessment",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}

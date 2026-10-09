@@ -1,0 +1,70 @@
+{
+  "case_id": "EXT-11",
+  "title": "Business purpose filled in but unusable",
+  "expected_next_action": [
+    "request_clarification"
+  ],
+  "minimum_check_failures": [
+    "missing-info item absent (expected one of: ['purpose', 'justification', 'business need', 'use case'])"
+  ],
+  "decision": {
+    "request_id": "EXT-11",
+    "recommendation": "Route for approval: Evidence is complete and no specialist review is triggered.",
+    "evidence": [
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $900 falls in the tier requiring Manager.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $900 is within Finance's available software budget of $29,000 ($28,100 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Finance"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignFlow (SW010, Approved, Company-wide, 45 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW010"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Route to Manager for approval. A reviewer should also judge whether the overlapping catalog tools already cover the need.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 0,
+      "tool_names": [],
+      "architecture": "rules",
+      "model": null,
+      "latency_ms": 9.2,
+      "rate_limit_wait_ms": 0.0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    "next_action": "route_for_approval",
+    "open_questions": [],
+    "guardrail_notes": [
+      "Rules-only run: no LLM was used."
+    ]
+  },
+  "model_draft": null,
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": false,
+    "draft_action": null,
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 0,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": []
+}

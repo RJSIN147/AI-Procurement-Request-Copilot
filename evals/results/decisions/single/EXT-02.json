@@ -1,0 +1,216 @@
+{
+  "case_id": "EXT-02",
+  "title": "Registry and vendor-risk service disagree",
+  "expected_next_action": [
+    "escalate_for_review"
+  ],
+  "minimum_check_failures": [],
+  "decision": {
+    "request_id": "REQ-1007",
+    "recommendation": "Escalate for review: Escalate for security and procurement review due to expired/conflicting vendor security status and overlap with existing approved SignalWatch deployment.",
+    "evidence": [
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Arjun Mehta is an IC5 in Engineering, manager Maya Rao.",
+        "reference": "E002"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Engineering software budget has $26,000 available; request $24,000 is within budget.",
+        "reference": "budget:Engineering"
+      },
+      {
+        "source": "search_software_catalog",
+        "finding": "SignalWatch (SW005) is already approved for Engineering with 80 seats; request adds 25 seats.",
+        "reference": "SW005"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor registry entry V005 shows security review dated 2025-07-01, 456 days old (expired per policy).",
+        "reference": "V005"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "External vendor-risk assessment reports SignalWatch review as expired (same date).",
+        "reference": "vendor-risk:SignalWatch"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy requires Department Head, Procurement, Finance, and Security approvals for $24,000 spend.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Policy flags existing tool overlap, vendor review expired, security review required, and conflicting vendor evidence.",
+        "reference": "policy:\u00a73"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Security review required due to production telemetry data access and cloud integration.",
+        "reference": "policy:\u00a75"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual amount $24,000 falls in the tier requiring Department Head, Finance, Procurement.",
+        "reference": "policy:\u00a74"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Annual cost $24,000 is within Engineering's available software budget of $26,000 ($2,000 left). This does not by itself mean the purchase should be approved.",
+        "reference": "policy:\u00a72, budget:Engineering"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Existing catalog software overlaps with this request: SignalWatch (SW005, Approved, Engineering, 80 seats; same vendor + same product + same category). Overlap is not a rejection - confirm the gap or use existing capacity first.",
+        "reference": "policy:\u00a73, SW005"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Registry security review for SignalWatch is dated 2025-07-01 (456 days before 2026-09-30); assessments are only current for 365 days.",
+        "reference": "policy:\u00a75, V005"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Vendor-risk service reports SignalWatch's assessment as 'expired' (last review 2025-07-01).",
+        "reference": "policy:\u00a75, vendor-risk:SignalWatch"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Registry says security 'Approved' (review 2025-07-01) but the vendor-risk service says 'expired' (review 2025-07-01). Not picking one - Security to confirm.",
+        "reference": "policy:\u00a75, V005, vendor-risk:SignalWatch"
+      },
+      {
+        "source": "check_policy_rules",
+        "finding": "Security review required for data access level 'production_telemetry' and integration 'Production cloud account'.",
+        "reference": "policy:\u00a75, request:data_access_level"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "vendor_review_expired",
+      "security_review_required",
+      "conflicting_vendor_evidence"
+    ],
+    "next_step": "Security team to resolve the conflicting/expired vendor security assessments and confirm need for additional SignalWatch seats; Procurement to evaluate whether existing capacity can satisfy the request.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 6,
+      "tool_calls": 5,
+      "tool_names": [
+        "get_requester_profile",
+        "check_department_budget",
+        "search_software_catalog",
+        "get_vendor_registry_record",
+        "check_policy_rules"
+      ],
+      "architecture": "single",
+      "model": "openai/gpt-oss-120b",
+      "latency_ms": 6626.6,
+      "rate_limit_wait_ms": 45500.0,
+      "prompt_tokens": 9594,
+      "completion_tokens": 1208
+    },
+    "next_action": "escalate_for_review",
+    "open_questions": [
+      "What specific gap in the existing SignalWatch license does the new request address (e.g., additional seats, features, or capacity)?"
+    ],
+    "guardrail_notes": []
+  },
+  "model_draft": {
+    "next_action": "escalate_for_review",
+    "recommendation": "Escalate for security and procurement review due to expired/conflicting vendor security status and overlap with existing approved SignalWatch deployment.",
+    "evidence": [
+      {
+        "ref": "E002",
+        "finding": "Requester Arjun Mehta is an IC5 in Engineering, manager Maya Rao."
+      },
+      {
+        "ref": "budget:Engineering",
+        "finding": "Engineering software budget has $26,000 available; request $24,000 is within budget."
+      },
+      {
+        "ref": "SW005",
+        "finding": "SignalWatch (SW005) is already approved for Engineering with 80 seats; request adds 25 seats."
+      },
+      {
+        "ref": "V005",
+        "finding": "Vendor registry entry V005 shows security review dated 2025-07-01, 456 days old (expired per policy)."
+      },
+      {
+        "ref": "vendor-risk:SignalWatch",
+        "finding": "External vendor-risk assessment reports SignalWatch review as expired (same date)."
+      },
+      {
+        "ref": "policy:\u00a74",
+        "finding": "Policy requires Department Head, Procurement, Finance, and Security approvals for $24,000 spend."
+      },
+      {
+        "ref": "policy:\u00a73",
+        "finding": "Policy flags existing tool overlap, vendor review expired, security review required, and conflicting vendor evidence."
+      },
+      {
+        "ref": "policy:\u00a75",
+        "finding": "Security review required due to production telemetry data access and cloud integration."
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "vendor_review_expired",
+      "security_review_required",
+      "conflicting_vendor_evidence"
+    ],
+    "missing_information": [],
+    "open_questions": [
+      "What specific gap in the existing SignalWatch license does the new request address (e.g., additional seats, features, or capacity)?"
+    ],
+    "suspicious_content": [],
+    "next_step": "Security team to resolve the conflicting/expired vendor security assessments and confirm need for additional SignalWatch seats; Procurement to evaluate whether existing capacity can satisfy the request."
+  },
+  "analyst_evidence_pack": null,
+  "guardrail_stats": {
+    "draft_present": true,
+    "draft_action": "escalate_for_review",
+    "action_overridden": false,
+    "approvals_added": [],
+    "flags_added": [],
+    "evidence_total": 8,
+    "evidence_ungrounded": 0,
+    "unknown_approvers": []
+  },
+  "error": null,
+  "tool_trace": [
+    {
+      "tool": "get_requester_profile",
+      "args": {}
+    },
+    {
+      "tool": "check_department_budget",
+      "args": {}
+    },
+    {
+      "tool": "search_software_catalog",
+      "args": {}
+    },
+    {
+      "tool": "get_vendor_registry_record",
+      "args": {}
+    },
+    {
+      "tool": "check_policy_rules",
+      "args": {}
+    }
+  ]
+}
