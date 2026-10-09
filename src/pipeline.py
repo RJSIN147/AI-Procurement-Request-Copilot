@@ -55,7 +55,7 @@ def analyze_request(request: dict, architecture: str = "single", *,
         except LLMUnavailable as exc:
             error = str(exc)
         except openai.OpenAIError as exc:
-            error = f"LLM call failed: {type(exc).__name__}"
+            error = f"LLM call failed: {type(exc).__name__}: {str(exc)[:200]}"
 
     rule_result = toolbox.policy_result()
     decision, stats = finalize(request, draft, rule_result, toolbox, llm_error=error,

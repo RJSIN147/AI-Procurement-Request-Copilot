@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from src.data_access import load_policy_text, policy_sections
 from src.llm import LLMClient, run_tool_loop
@@ -15,6 +15,13 @@ from src.tools import ToolBox
 DATA_TOOLS = ["get_requester_profile", "check_department_budget", "search_software_catalog",
               "get_vendor_registry_record", "get_vendor_risk_assessment"]
 SINGLE_TOOLS = DATA_TOOLS + ["check_policy_rules", "read_policy"]
+
+
+def _as_list(value):
+    """Models sometimes send a bare string/object where a list is expected."""
+    if value is None or value == "":
+        return []
+    return value if isinstance(value, list) else [value]
 
 
 class CitedFinding(BaseModel):
@@ -33,6 +40,9 @@ class DecisionDraft(BaseModel):
     suspicious_content: list[str] = Field(default_factory=list)
     next_step: str
 
+    _lists = field_validator("evidence", "required_approvals", "risk_flags", "missing_information",
+                             "open_questions", "suspicious_content", mode="before")(_as_list)
+
 
 class ExistingToolNote(BaseModel):
     ref: str
@@ -49,6 +59,9 @@ class EvidencePack(BaseModel):
     gaps_or_conflicts: list[str] = Field(default_factory=list)
     suspicious_content: list[str] = Field(default_factory=list)
     evidence: list[CitedFinding] = Field(default_factory=list)
+
+    _lists = field_validator("existing_tools", "gaps_or_conflicts", "suspicious_content", "evidence",
+                             mode="before")(_as_list)
 
 
 def _request_json(request: dict) -> str:

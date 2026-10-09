@@ -12,6 +12,8 @@ import openai
 
 from src.agents import DecisionDraft, run_single, run_staged
 from src.guardrails import finalize
+from src.llm import LLMClient, run_tool_loop
+from src.prompts import SUBMIT_DECISION
 from src.pipeline import analyze_request
 from src.telemetry import RunTelemetryCounter
 from src.tools import ToolBox
@@ -111,6 +113,22 @@ class SingleAgentLoopTests(unittest.TestCase):
         box = toolbox()
         result = box.call("get_requester_profile", {"requester_id": "E001"})
         self.assertEqual(result["ref"], "E004")  # still the request's requester
+
+
+class ProviderRecoveryTests(unittest.TestCase):
+    def test_schema_rejected_call_is_recovered_and_coerced(self):
+        generated = json.dumps({"name": "submit_decision", "arguments": {**draft(), "suspicious_content": "x"}})
+        error = openai.BadRequestError("tool_use_failed", response=httpx.Response(
+            400, request=httpx.Request("POST", "https://example.invalid")),
+            body={"code": "tool_use_failed", "failed_generation": generated})
+        with mock.patch.dict(os.environ, {"GROQ_API_KEY": "test"}):
+            llm = LLMClient(RunTelemetryCounter())
+        llm.client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(
+            create=mock.Mock(side_effect=error))))
+        box = toolbox()
+        result = run_tool_loop(llm, box, [], [], SUBMIT_DECISION, DecisionDraft.model_validate, max_turns=1)
+        self.assertEqual(result.suspicious_content, ["x"])
+        self.assertEqual(llm.telemetry.llm_calls, 1)
 
 
 class StagedLoopTests(unittest.TestCase):

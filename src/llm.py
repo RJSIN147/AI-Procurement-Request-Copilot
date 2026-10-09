@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import time
+from types import SimpleNamespace
 from typing import Callable
 
 import openai
@@ -22,6 +23,23 @@ class LLMUnavailable(RuntimeError):
 
 def llm_configured() -> bool:
     return bool(os.getenv("GROQ_API_KEY") or os.getenv("LLM_API_KEY"))
+
+
+def _recover_tool_call(exc: openai.BadRequestError, n: int):
+    body = exc.body if isinstance(exc.body, dict) else {}
+    generated = body.get("failed_generation") or (body.get("error") or {}).get("failed_generation")
+    if not generated:
+        return None
+    try:
+        parsed = json.loads(generated)
+        name, arguments = parsed["name"], parsed.get("arguments", {})
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return None
+    if not isinstance(arguments, str):
+        arguments = json.dumps(arguments)
+    call = SimpleNamespace(id=f"recovered_{n}", type="function",
+                           function=SimpleNamespace(name=name, arguments=arguments))
+    return SimpleNamespace(content="", tool_calls=[call])
 
 
 def _retry_after(exc: openai.APIStatusError, attempt: int) -> float:
@@ -64,8 +82,13 @@ class LLMClient:
                 time.sleep(2 * server_errors)
                 continue
             except openai.BadRequestError as exc:
-                # tool_use_failed = the model emitted a malformed tool call; usually a one-off
                 self.telemetry.record_llm_call()
+                # Groq validates tool arguments against the schema and rejects near-misses (e.g. a
+                # string where the schema says array). It returns what the model generated, so recover
+                # that call and let our own validation coerce it or send the error back to the model.
+                recovered = _recover_tool_call(exc, malformed)
+                if recovered is not None:
+                    return recovered
                 malformed += 1
                 if "tool_use_failed" in str(exc) and malformed < 3:
                     continue
