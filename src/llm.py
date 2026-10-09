@@ -163,7 +163,8 @@ def run_tool_loop(llm: LLMClient, toolbox, messages: list[dict], tool_names: lis
                 result = toolbox.call(call.function.name, call.function.arguments)
             else:
                 result = {"error": f"Tool '{call.function.name}' is not available here."}
-            messages.append({"role": "tool", "tool_call_id": call.id, "content": json.dumps(result, default=str)})
+            content = json.dumps(result, default=str, ensure_ascii=False)
+            messages.append({"role": "tool", "tool_call_id": call.id, "content": content})
 
         for call in calls:
             if call.function.name != final_name:

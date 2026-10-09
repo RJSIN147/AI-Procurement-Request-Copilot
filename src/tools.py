@@ -54,7 +54,7 @@ POLICY_REF = re.compile(r"^(?:policy\s*[:\-]?\s*)?(?:§|section\s*)?\s*(\d{1,2})
 
 
 def normalize_ref(ref: str) -> str:
-    text = str(ref).strip().strip("[]()'\"`").strip()
+    text = str(ref).replace("\\u00a7", "§").strip().strip("[]()'\"`").strip()
     lowered = re.sub(r"\s+", " ", text.lower())
     if lowered.startswith(("request.", "request:", "request ")):
         return "request:" + lowered[8:].replace(" ", "")

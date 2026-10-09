@@ -65,7 +65,7 @@ class EvidencePack(BaseModel):
 
 
 def _request_json(request: dict) -> str:
-    return json.dumps(request, indent=2, default=str)
+    return json.dumps(request, indent=2, default=str, ensure_ascii=False)
 
 
 def run_single(request: dict, toolbox: ToolBox, llm: LLMClient) -> DecisionDraft | None:
@@ -95,8 +95,9 @@ def run_staged(request: dict, toolbox: ToolBox, llm: LLMClient) -> tuple[Decisio
     reviewer_input = (
         request_message(_request_json(request), toolbox.reference_date.isoformat())
         + f"\n\n<analyst_evidence_pack>\n{pack_text}\n</analyst_evidence_pack>"
-        + f"\n\n<tool_results>\n{json.dumps(digest, default=str)}\n</tool_results>"
-        + f"\n\n<policy_check>\n{json.dumps(policy_check, default=str)}\n</policy_check>"
+        # ensure_ascii=False: with escaping the model saw "\u00a7" for "§" and copied it into its refs
+        + f"\n\n<tool_results>\n{json.dumps(digest, default=str, ensure_ascii=False)}\n</tool_results>"
+        + f"\n\n<policy_check>\n{json.dumps(policy_check, default=str, ensure_ascii=False)}\n</policy_check>"
         + f"\n\n<policy>\n{load_policy_text()}\n</policy>"
     )
     # Stage 2: reviewer has no data tools; it must decide from the pack + tool results.

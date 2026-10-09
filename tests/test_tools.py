@@ -8,7 +8,7 @@ from tests.helpers import base_request, fake_vendor_risk
 
 class RefTests(unittest.TestCase):
     def test_normalize_ref_variants(self):
-        for raw in ("policy:§5", "Policy §5", "§5", "policy section 5", "Section 5"):
+        for raw in ("policy:§5", "Policy §5", "§5", "policy section 5", "Section 5", "policy:\\u00a75"):
             self.assertEqual(normalize_ref(raw), "policy:§5", raw)
         self.assertEqual(normalize_ref("request.business_justification"), "request:business_justification")
         self.assertEqual(normalize_ref("budget: Finance"), "budget:finance")
