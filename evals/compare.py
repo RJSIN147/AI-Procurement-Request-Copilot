@@ -84,9 +84,7 @@ def extra_checks(decision, expectations: dict) -> list[str]:
 
 
 def run_case(case: dict, architecture: str, rep: int) -> dict:
-    started = time.perf_counter()
     report = analyze_request(case["request"], architecture, vendor_risk_fn=risk_fn_for(case))
-    latency = (time.perf_counter() - started) * 1000
     d, s, t = report.decision, report.stats, report.decision.telemetry
 
     failures = minimum_checks(d, case["expectations"]) + extra_checks(d, case["expectations"])
@@ -112,7 +110,8 @@ def run_case(case: dict, architecture: str, rep: int) -> dict:
         "flags_added_by_guardrail": ";".join(s["flags_added"]),
         "draft_policy_complete": s["draft_present"] and not s["approvals_added"] and not s["flags_added"],
         "evidence_cited": s["evidence_total"], "evidence_ungrounded": s["evidence_ungrounded"],
-        "latency_ms": round(latency, 1), "llm_calls": t.llm_calls, "tool_calls": t.tool_calls,
+        "latency_ms": t.latency_ms, "rate_limit_wait_ms": t.rate_limit_wait_ms,
+        "llm_calls": t.llm_calls, "tool_calls": t.tool_calls,
         "prompt_tokens": t.prompt_tokens, "completion_tokens": t.completion_tokens,
         "error": report.error or "", "failures": " | ".join(failures),
     }
@@ -156,6 +155,7 @@ def summarise(rows: list[dict], architectures: list[str], model: str) -> str:
         ("Runs with LLM errors / fallback", lambda rs: pct(sum(bool(r["error"]) for r in rs), len(rs))),
         ("Avg latency (ms)", avg("latency_ms")),
         ("Median latency (ms)", median("latency_ms")),
+        ("Avg Groq rate-limit wait excluded from latency (ms)", avg("rate_limit_wait_ms")),
         ("Avg LLM calls", avg("llm_calls")),
         ("Avg tool calls", avg("tool_calls")),
         ("Avg tokens (prompt + completion)",

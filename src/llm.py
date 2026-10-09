@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from typing import Callable
 
 import openai
@@ -23,6 +24,13 @@ def llm_configured() -> bool:
     return bool(os.getenv("GROQ_API_KEY") or os.getenv("LLM_API_KEY"))
 
 
+def _retry_after(exc: openai.APIStatusError, attempt: int) -> float:
+    try:
+        return min(float(exc.response.headers.get("retry-after", "")), 60.0) + 0.5
+    except (TypeError, ValueError):
+        return min(2.0 * 2 ** attempt, 30.0)
+
+
 class LLMClient:
     def __init__(self, telemetry: RunTelemetryCounter, model: str | None = None):
         api_key = os.getenv("GROQ_API_KEY") or os.getenv("LLM_API_KEY")
@@ -30,29 +38,43 @@ class LLMClient:
             raise LLMUnavailable("No LLM key configured (set GROQ_API_KEY in .env)")
         self.telemetry = telemetry
         self.model = model or os.getenv("MODEL_NAME") or DEFAULT_MODEL
+        # Retries are handled below so rate-limit waits can be measured separately from latency.
         self.client = OpenAI(api_key=api_key, base_url=os.getenv("LLM_BASE_URL", DEFAULT_BASE_URL),
-                             max_retries=6, timeout=60)
+                             max_retries=0, timeout=60)
 
     def chat(self, messages: list[dict], tools: list[dict] | None = None, tool_choice: str | dict = "auto"):
         kwargs: dict = {"model": self.model, "messages": messages, "temperature": 0, "max_completion_tokens": 2500}
         if tools:
             kwargs["tools"] = tools
             kwargs["tool_choice"] = tool_choice
-        # Groq returns 400 tool_use_failed when the model emits a malformed tool call;
-        # that is usually a one-off, so retry it a couple of times.
-        for attempt in range(3):
+        malformed = server_errors = 0
+        for attempt in range(12):
             try:
                 response = self.client.chat.completions.create(**kwargs)
+            except openai.RateLimitError as exc:
+                # Groq free tier is 8k tokens/min, so this happens mid-run. Not counted as latency.
+                wait = _retry_after(exc, attempt)
+                self.telemetry.rate_limit_wait_ms += wait * 1000
+                time.sleep(wait)
+                continue
+            except (openai.APIConnectionError, openai.InternalServerError):
+                server_errors += 1
+                if server_errors > 2:
+                    raise
+                time.sleep(2 * server_errors)
+                continue
             except openai.BadRequestError as exc:
+                # tool_use_failed = the model emitted a malformed tool call; usually a one-off
                 self.telemetry.record_llm_call()
-                if "tool_use_failed" in str(exc) and attempt < 2:
+                malformed += 1
+                if "tool_use_failed" in str(exc) and malformed < 3:
                     continue
                 raise
             usage = response.usage
             self.telemetry.record_llm_call(getattr(usage, "prompt_tokens", 0) or 0,
                                            getattr(usage, "completion_tokens", 0) or 0)
             return response.choices[0].message
-        raise RuntimeError("unreachable")
+        raise LLMUnavailable("Gave up after repeated rate limiting")
 
 
 def _assistant_message(msg) -> dict:
@@ -75,8 +97,18 @@ def run_tool_loop(llm: LLMClient, toolbox, messages: list[dict], tool_names: lis
     force_from = max_turns - 1 if force_final_from is None else force_final_from
 
     for turn in range(max_turns):
-        choice = {"type": "function", "function": {"name": final_name}} if turn >= force_from else "auto"
-        msg = llm.chat(messages, tools=tools, tool_choice=choice)
+        forced = turn >= force_from
+        if forced and turn > 0:
+            messages.append({"role": "user", "content": f"No more tool calls. Call {final_name} now with what you "
+                                                        "have, and say what you could not check."})
+        choice = {"type": "function", "function": {"name": final_name}} if forced else "auto"
+        try:
+            msg = llm.chat(messages, tools=tools, tool_choice=choice)
+        except openai.BadRequestError:
+            if forced:
+                # the model kept trying another tool on the forced turn; give up cleanly
+                return None
+            raise
         messages.append(_assistant_message(msg))
         calls = msg.tool_calls or []
         if not calls:

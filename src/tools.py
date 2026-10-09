@@ -142,7 +142,10 @@ class ToolBox:
                 arguments = json.loads(arguments or "{}")
             except json.JSONDecodeError:
                 return {"error": "Arguments were not valid JSON."}
-        args = {k: v for k, v in (arguments or {}).items() if v not in (None, "")}
+        # Models sometimes pass arguments a tool doesn't take (e.g. requester_id); the tools read
+        # those from the request anyway, so drop anything the schema doesn't declare.
+        declared = self.tools[name].parameters.get("properties", {})
+        args = {k: v for k, v in (arguments or {}).items() if k in declared and v not in (None, "")}
 
         self.telemetry.record_tool_call(name)
         started = time.perf_counter()

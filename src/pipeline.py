@@ -62,7 +62,9 @@ def analyze_request(request: dict, architecture: str = "single", *,
                                rules_only=architecture == "rules")
     decision.telemetry = RunTelemetry(
         llm_calls=telemetry.llm_calls, tool_calls=telemetry.tool_calls, tool_names=telemetry.tool_names,
-        architecture=architecture, model=model, latency_ms=round((time.perf_counter() - started) * 1000, 1),
+        architecture=architecture, model=model,
+        latency_ms=round((time.perf_counter() - started) * 1000 - telemetry.rate_limit_wait_ms, 1),
+        rate_limit_wait_ms=round(telemetry.rate_limit_wait_ms, 1),
         prompt_tokens=telemetry.prompt_tokens, completion_tokens=telemetry.completion_tokens)
     return RunReport(decision=decision, rules=rule_result.to_dict(),
                      draft=draft.model_dump() if draft else None,

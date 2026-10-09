@@ -61,7 +61,7 @@ def run_single(request: dict, toolbox: ToolBox, llm: LLMClient) -> DecisionDraft
         {"role": "user", "content": request_message(_request_json(request), toolbox.reference_date.isoformat())},
     ]
     return run_tool_loop(llm, toolbox, messages, SINGLE_TOOLS, SUBMIT_DECISION, DecisionDraft.model_validate,
-                         max_turns=7)
+                         max_turns=10)
 
 
 def run_staged(request: dict, toolbox: ToolBox, llm: LLMClient) -> tuple[DecisionDraft | None, EvidencePack | None]:
@@ -71,7 +71,7 @@ def run_staged(request: dict, toolbox: ToolBox, llm: LLMClient) -> tuple[Decisio
         {"role": "user", "content": request_message(_request_json(request), toolbox.reference_date.isoformat())},
     ]
     pack = run_tool_loop(llm, toolbox, analyst_messages, DATA_TOOLS, SUBMIT_EVIDENCE_PACK,
-                         EvidencePack.model_validate, max_turns=6)
+                         EvidencePack.model_validate, max_turns=8)
 
     # Between the stages: deterministic policy checks, run by code rather than chosen by a model.
     policy_check = toolbox.call("check_policy_rules")

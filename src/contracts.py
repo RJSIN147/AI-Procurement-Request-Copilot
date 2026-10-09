@@ -17,7 +17,8 @@ class RunTelemetry(BaseModel):
     # additions (optional, so the original contract still validates)
     architecture: str | None = None
     model: str | None = None
-    latency_ms: float | None = None
+    latency_ms: float | None = Field(default=None, description="End-to-end time minus provider rate-limit waits")
+    rate_limit_wait_ms: float | None = None
     prompt_tokens: int | None = None
     completion_tokens: int | None = None
 

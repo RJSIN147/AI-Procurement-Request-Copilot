@@ -7,6 +7,9 @@ import unittest
 from types import SimpleNamespace
 from unittest import mock
 
+import httpx
+import openai
+
 from src.agents import DecisionDraft, run_single, run_staged
 from src.guardrails import finalize
 from src.pipeline import analyze_request
@@ -34,7 +37,10 @@ class FakeLLM:
     def chat(self, messages, tools=None, tool_choice="auto"):
         self.telemetry.record_llm_call()
         self.seen.append([dict(m) for m in messages])
-        return self.script.pop(0)
+        item = self.script.pop(0)
+        if isinstance(item, Exception):
+            raise item
+        return item
 
 
 def draft(**changes) -> dict:
@@ -88,8 +94,23 @@ class SingleAgentLoopTests(unittest.TestCase):
 
     def test_gives_up_after_max_turns(self):
         box = toolbox()
-        llm = FakeLLM([reply(content="thinking...") for _ in range(7)], box.telemetry)
+        llm = FakeLLM([reply(content="thinking...") for _ in range(10)], box.telemetry)
         self.assertIsNone(run_single(box.request, box, llm))
+
+    def test_forced_turn_rejected_by_provider_returns_none(self):
+        # Groq answers 400 tool_use_failed if the model calls another tool on the forced turn
+        box = toolbox()
+        error = openai.BadRequestError("tool_use_failed", body=None, response=httpx.Response(
+            400, request=httpx.Request("POST", "https://example.invalid")))
+        llm = FakeLLM([reply(call("check_department_budget", call_id=f"c{i}")) for i in range(9)] + [error],
+                      box.telemetry)
+        self.assertIsNone(run_single(box.request, box, llm))
+        self.assertIn("No more tool calls", llm.seen[-1][-1]["content"])
+
+    def test_undeclared_tool_arguments_are_dropped(self):
+        box = toolbox()
+        result = box.call("get_requester_profile", {"requester_id": "E001"})
+        self.assertEqual(result["ref"], "E004")  # still the request's requester
 
 
 class StagedLoopTests(unittest.TestCase):
