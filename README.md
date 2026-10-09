@@ -93,7 +93,7 @@ Same tools, rules and guardrail as A, so the comparison is only about how the LL
 
 I ran both architectures on the same 17 cases: the 6 public cases plus 11 of my own in `evals/extra_cases.json` (overlap, conflicting vendor data, >$25k, unknown vendor with no budget, injection in vendor notes, an unverified "Finance already said yes", vague requests, a vendor-risk outage). The extra cases are mostly the brief's "expect edge cases" list. There's also a third column, **rules**: just the deterministic engine with no LLM, as a reference point.
 
-A case passes if the final output passes the starter's minimum checks (approvals, flags, missing info, human review) **and** has the expected next action. Same model for both (`openai/gpt-oss-120b`, temperature 0), 1 run per case. Full output is in [`evals/results/summary.md`](evals/results/summary.md), [`runs.csv`](evals/results/runs.csv), and one JSON per case in `evals/results/decisions/` with the model draft, the guardrail changes and the tool trace.
+A case passes if the final output passes the starter's minimum checks (approvals, flags, missing info, human review) **and** has the expected next action. Same model for both (`openai/gpt-oss-120b`, temperature 0), 1 run per case. Full output is in [`evals/results/summary.md`](evals/results/summary.md), [`runs.csv`](evals/results/runs.csv), [`evaluation_results.csv`](evals/results/evaluation_results.csv) (the same runs in the starter's `templates/evaluation_results_template.csv` columns), and one JSON per case in `evals/results/decisions/` with the model draft, the guardrail changes and the tool trace.
 
 | Metric | A: single | B: staged | rules only |
 |---|---:|---:|---:|
@@ -197,7 +197,7 @@ evals/
   compare.py            same cases through each architecture -> evals/results/
   extra_cases.json      11 extra edge cases + expected next actions
   run_public_evals.py   starter harness
-  results/              summary.md, runs.csv, decisions/<arch>/<case>.json
+  results/              summary.md, runs.csv, evaluation_results.csv, decisions/<arch>/<case>.json
 docs/
   architecture.md       diagrams, tools, guardrail, assumptions
   decision_memo.md      which architecture I'd ship (<= 500 words)

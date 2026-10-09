@@ -7,6 +7,7 @@
 
 Outputs (evals/results/):
     runs.csv            one row per (architecture, case, repeat)
+    evaluation_results.csv  the same runs in the columns of templates/evaluation_results_template.csv
     summary.md          the comparison table used in the README / decision memo
     decisions/<arch>/   full decision + model draft + guardrail stats per case, for manual review
 """
@@ -125,6 +126,36 @@ def row_from_record(record: dict, architecture: str, rep: int) -> dict:
         "llm_calls": t["llm_calls"], "tool_calls": t["tool_calls"],
         "prompt_tokens": t["prompt_tokens"], "completion_tokens": t["completion_tokens"],
         "error": record["error"] or "", "failures": " | ".join(failures),
+    }
+
+
+TEMPLATE_COLUMNS = ["case_id", "architecture", "correct_next_action", "grounded_evidence", "policy_followed",
+                    "human_escalation_correct", "latency_ms", "llm_calls", "tool_calls", "notes"]
+
+
+def template_row(row: dict) -> dict:
+    """One row in the format of templates/evaluation_results_template.csv."""
+    escalate_expected = "escalate_for_review" in row["expected_action"].split("|")
+    notes = [row["failures"]] if row["failures"] else []
+    if not row["action_correct"]:
+        notes.append(f"next action {row['next_action']}, expected {row['expected_action'].replace('|', ' or ')}")
+    if row["action_overridden"]:
+        notes.append(f"guardrail changed draft action {row['draft_action']}")
+    if row["approvals_added_by_guardrail"] or row["flags_added_by_guardrail"]:
+        notes.append("guardrail added " + ", ".join(filter(None, [row["approvals_added_by_guardrail"],
+                                                                   row["flags_added_by_guardrail"]])).replace(";", ", "))
+    if row["evidence_ungrounded"]:
+        notes.append(f"{row['evidence_ungrounded']}/{row['evidence_cited']} AI evidence items dropped as ungrounded")
+    return {
+        "case_id": row["case_id"], "architecture": row["architecture"],
+        "correct_next_action": row["action_correct"],
+        # final output only keeps evidence whose refs came back from a tool; this says whether the model's
+        # own draft needed anything dropped
+        "grounded_evidence": not row["evidence_ungrounded"],
+        "policy_followed": row["passed_minimum_checks"],
+        "human_escalation_correct": (row["next_action"] == "escalate_for_review") == escalate_expected,
+        "latency_ms": row["latency_ms"], "llm_calls": row["llm_calls"], "tool_calls": row["tool_calls"],
+        "notes": "; ".join(notes),
     }
 
 
@@ -249,10 +280,14 @@ def main() -> None:
         writer = csv.DictWriter(f, fieldnames=rows[0].keys())
         writer.writeheader()
         writer.writerows(rows)
+    with (OUT / "evaluation_results.csv").open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=TEMPLATE_COLUMNS)
+        writer.writeheader()
+        writer.writerows(template_row(r) for r in rows)
     summary = summarise(rows, args.architectures, model)
     (OUT / "summary.md").write_text(summary, encoding="utf-8")
     print("\n" + summary)
-    print(f"Wrote {OUT.relative_to(ROOT)}/runs.csv, summary.md and decisions/")
+    print(f"Wrote {OUT.relative_to(ROOT)}/runs.csv, evaluation_results.csv, summary.md and decisions/")
 
 
 if __name__ == "__main__":

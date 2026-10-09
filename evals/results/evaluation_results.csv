@@ -1,0 +1,52 @@
+case_id,architecture,correct_next_action,grounded_evidence,policy_followed,human_escalation_correct,latency_ms,llm_calls,tool_calls,notes
+PUB-01,single,True,True,True,True,9259.9,8,6,
+PUB-02,single,True,True,True,True,9994.6,7,6,
+PUB-03,single,True,True,True,True,10632.8,7,6,
+PUB-04,single,True,True,True,True,8356.7,7,6,
+PUB-05,single,True,True,True,True,7937.0,7,6,
+PUB-06,single,True,False,True,True,10801.4,8,6,1/10 AI evidence items dropped as ungrounded
+EXT-01,single,True,True,True,True,7568.3,7,6,
+EXT-02,single,True,True,True,True,6626.6,6,5,
+EXT-03,single,False,True,True,True,5815.0,7,6,"next action route_for_approval, expected use_existing_tool"
+EXT-04,single,True,True,True,True,9359.5,7,6,
+EXT-05,single,True,True,True,True,10629.3,7,6,
+EXT-06,single,True,True,True,True,10046.5,8,6,
+EXT-07,single,True,True,True,True,6629.3,7,6,
+EXT-08,single,True,True,True,True,7945.3,7,6,
+EXT-09,single,True,True,True,True,15110.2,6,5,
+EXT-10,single,True,True,True,True,13997.5,7,6,
+EXT-11,single,False,True,False,True,6465.0,7,6,"missing-info item absent (expected one of: ['purpose', 'justification', 'business need', 'use case']); next action route_for_approval, expected request_clarification"
+PUB-01,staged,True,True,True,True,10174.4,8,7,
+PUB-02,staged,True,False,True,True,9546.7,7,6,4/9 AI evidence items dropped as ungrounded
+PUB-03,staged,True,True,True,True,9804.8,7,6,
+PUB-04,staged,True,False,True,True,9089.0,7,6,1/10 AI evidence items dropped as ungrounded
+PUB-05,staged,True,True,True,True,11742.5,7,6,guardrail added Procurement
+PUB-06,staged,True,False,True,True,10172.1,7,6,1/8 AI evidence items dropped as ungrounded
+EXT-01,staged,True,True,True,True,10137.2,8,7,
+EXT-02,staged,True,True,True,True,9880.6,7,6,
+EXT-03,staged,False,True,True,False,9082.2,7,6,"next action escalate_for_review, expected use_existing_tool; guardrail changed draft action route_for_approval"
+EXT-04,staged,True,True,True,True,9044.4,7,6,
+EXT-05,staged,True,True,True,True,9076.5,7,6,
+EXT-06,staged,True,False,True,True,7548.7,7,6,3/9 AI evidence items dropped as ungrounded
+EXT-07,staged,True,True,True,True,9483.5,7,6,
+EXT-08,staged,True,True,True,True,8357.3,7,6,
+EXT-09,staged,True,True,True,True,11703.9,8,7,
+EXT-10,staged,True,True,True,True,11174.0,7,6,
+EXT-11,staged,False,True,False,True,9605.4,7,6,"missing-info item absent (expected one of: ['purpose', 'justification', 'business need', 'use case']); next action route_for_approval, expected request_clarification"
+PUB-01,rules,True,True,True,True,23.1,0,0,
+PUB-02,rules,True,True,True,True,19.7,0,0,
+PUB-03,rules,True,True,True,True,19.4,0,0,
+PUB-04,rules,True,True,True,True,18.6,0,0,
+PUB-05,rules,True,True,True,True,20.3,0,0,
+PUB-06,rules,True,True,True,True,318.3,0,0,
+EXT-01,rules,True,True,True,True,8.4,0,0,
+EXT-02,rules,True,True,True,True,10.2,0,0,
+EXT-03,rules,False,True,True,True,10.4,0,0,"next action route_for_approval, expected use_existing_tool"
+EXT-04,rules,True,True,True,True,9.7,0,0,
+EXT-05,rules,True,True,True,True,6.8,0,0,
+EXT-06,rules,True,True,True,True,6.2,0,0,
+EXT-07,rules,True,True,True,True,5.2,0,0,
+EXT-08,rules,True,True,True,True,8.5,0,0,
+EXT-09,rules,True,True,True,True,9.0,0,0,
+EXT-10,rules,True,True,True,True,305.6,0,0,
+EXT-11,rules,False,True,False,True,9.2,0,0,"missing-info item absent (expected one of: ['purpose', 'justification', 'business need', 'use case']); next action route_for_approval, expected request_clarification"
