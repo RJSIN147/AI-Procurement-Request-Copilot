@@ -117,6 +117,7 @@ def run_tool_loop(llm: LLMClient, toolbox, messages: list[dict], tool_names: lis
     """
     final_name = final_tool["function"]["name"]
     tools = toolbox.specs(tool_names) + [final_tool]
+    allowed = set(tool_names)
     force_from = max_turns - 1 if force_final_from is None else force_final_from
 
     for turn in range(max_turns):
@@ -140,7 +141,12 @@ def run_tool_loop(llm: LLMClient, toolbox, messages: list[dict], tool_names: lis
 
         data_calls = [c for c in calls if c.function.name != final_name]
         for call in data_calls:
-            result = toolbox.call(call.function.name, call.function.arguments)
+            # Only tools offered at this step run. The provider normally enforces this, but calls
+            # recovered from a rejected generation (see _recover_tool_call) skip that check.
+            if call.function.name in allowed and not forced:
+                result = toolbox.call(call.function.name, call.function.arguments)
+            else:
+                result = {"error": f"Tool '{call.function.name}' is not available here."}
             messages.append({"role": "tool", "tool_call_id": call.id, "content": json.dumps(result, default=str)})
 
         for call in calls:

@@ -131,6 +131,25 @@ class ProviderRecoveryTests(unittest.TestCase):
         self.assertEqual(llm.telemetry.llm_calls, 1)
 
 
+class ToolScopeTests(unittest.TestCase):
+    def test_tools_not_offered_at_this_step_do_not_run(self):
+        # e.g. the staged reviewer has no data tools; a recovered call must not reach them
+        box = toolbox()
+        llm = FakeLLM([reply(call("get_vendor_risk_assessment", {"vendor_name": "SignFlow"})),
+                       reply(call("submit_decision", draft(), call_id="final"))], box.telemetry)
+        result = run_tool_loop(llm, box, [], [], SUBMIT_DECISION, DecisionDraft.model_validate, max_turns=3)
+        self.assertIsNotNone(result)
+        self.assertEqual(box.telemetry.tool_calls, 0)
+        self.assertIn("not available", llm.seen[1][-1]["content"])
+
+    def test_no_data_tools_on_the_forced_turn(self):
+        box = toolbox()
+        llm = FakeLLM([reply(call("check_department_budget"))], box.telemetry)
+        run_tool_loop(llm, box, [], ["check_department_budget"], SUBMIT_DECISION, DecisionDraft.model_validate,
+                      max_turns=1)
+        self.assertEqual(box.telemetry.tool_calls, 0)
+
+
 class StagedLoopTests(unittest.TestCase):
     def test_analyst_then_reviewer(self):
         box = toolbox()
