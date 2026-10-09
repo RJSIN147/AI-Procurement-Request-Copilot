@@ -143,12 +143,16 @@ with right:
         st.info("Run the analysis to get a recommendation.")
     else:
         d = report.decision
+        st.markdown("**Recommendation**")
         ACTION_STYLE.get(d.next_action, st.info)(f"**{d.recommendation}**")
         st.markdown(f"**Next step:** {d.next_step}")
         st.markdown(f"**Approvals required:** {badges(d.required_approvals, 'blue')}")
         st.markdown(f"**Risk flags:** {badges(d.risk_flags, 'violet', FLAG_COLOR)}")
+        # always shown, even when empty: it's one of the required output fields
         if d.missing_information:
             st.markdown("**Missing information**\n" + "\n".join(f"- {m}" for m in d.missing_information))
+        else:
+            st.markdown("**Missing information:** _none_")
         if d.open_questions:
             st.markdown("**Open questions**\n" + "\n".join(f"- {q}" for q in d.open_questions))
         if d.guardrail_notes:
