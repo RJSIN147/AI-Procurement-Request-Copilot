@@ -12,7 +12,7 @@ import openai
 
 from src.agents import DecisionDraft, run_single, run_staged
 from src.guardrails import finalize
-from src.llm import LLMClient, run_tool_loop
+from src.llm import LLMClient, QuotaExhausted, run_tool_loop
 from src.prompts import SUBMIT_DECISION
 from src.pipeline import analyze_request
 from src.telemetry import RunTelemetryCounter
@@ -129,6 +129,20 @@ class ProviderRecoveryTests(unittest.TestCase):
         result = run_tool_loop(llm, box, [], [], SUBMIT_DECISION, DecisionDraft.model_validate, max_turns=1)
         self.assertEqual(result.suspicious_content, ["x"])
         self.assertEqual(llm.telemetry.llm_calls, 1)
+
+    def test_daily_limit_fails_fast(self):
+        error = openai.RateLimitError("Rate limit reached ... on tokens per day (TPD)", response=httpx.Response(
+            429, headers={"retry-after": "540"}, request=httpx.Request("POST", "https://example.invalid")),
+            body=None)
+        with mock.patch.dict(os.environ, {"GROQ_API_KEY": "test"}):
+            llm = LLMClient(RunTelemetryCounter())
+        create = mock.Mock(side_effect=error)
+        llm.client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+        with mock.patch("src.llm.time.sleep") as sleep, self.assertRaises(QuotaExhausted) as raised:
+            llm.chat([{"role": "user", "content": "hi"}])
+        self.assertEqual(raised.exception.retry_after, 540.0)
+        self.assertEqual(create.call_count, 1)
+        sleep.assert_not_called()
 
 
 class ToolScopeTests(unittest.TestCase):
@@ -263,6 +277,14 @@ class PipelineFallbackTests(unittest.TestCase):
         self.assertIsNone(report.error)
         self.assertEqual(report.decision.telemetry.llm_calls, 2)
         self.assertEqual(report.decision.telemetry.tool_calls, 1)
+
+    def test_daily_limit_falls_back_and_is_reported(self):
+        def factory(telemetry):
+            raise QuotaExhausted("Groq daily limit reached for this model", 300.0)
+        with mock.patch("src.pipeline.LLMClient", side_effect=factory):
+            report = analyze_request(base_request(), "single", vendor_risk_fn=fake_vendor_risk)
+        self.assertEqual(report.quota_retry_after, 300.0)
+        self.assertIn("ai_analysis_unavailable", report.decision.risk_flags)
 
     def test_rejects_unknown_architecture(self):
         with self.assertRaises(ValueError):

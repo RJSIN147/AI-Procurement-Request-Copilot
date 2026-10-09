@@ -9,7 +9,7 @@ import openai
 from src.agents import run_single, run_staged
 from src.contracts import ProcurementDecision, RunTelemetry
 from src.guardrails import finalize
-from src.llm import LLMClient, LLMUnavailable
+from src.llm import LLMClient, LLMUnavailable, QuotaExhausted
 from src.telemetry import RunTelemetryCounter
 from src.tools import ToolBox
 
@@ -25,6 +25,7 @@ class RunReport:
     trace: list[dict]
     stats: dict
     error: str | None
+    quota_retry_after: float | None = None  # set when the provider's daily limit cut the run short
 
 
 def analyze_request(request: dict, architecture: str = "single", *,
@@ -40,7 +41,7 @@ def analyze_request(request: dict, architecture: str = "single", *,
     telemetry = RunTelemetryCounter()
     toolbox = ToolBox(request, telemetry, vendor_risk_fn)
     draft = pack = None
-    error = model = None
+    error = model = quota_retry_after = None
 
     if architecture != "rules":
         try:
@@ -52,6 +53,8 @@ def analyze_request(request: dict, architecture: str = "single", *,
                 draft, pack = run_staged(request, toolbox, llm)
             if draft is None:
                 error = "the model did not return a valid decision"
+        except QuotaExhausted as exc:
+            error, quota_retry_after = str(exc), exc.retry_after or 60.0
         except LLMUnavailable as exc:
             error = str(exc)
         except openai.OpenAIError as exc:
@@ -69,4 +72,4 @@ def analyze_request(request: dict, architecture: str = "single", *,
     return RunReport(decision=decision, rules=rule_result.to_dict(),
                      draft=draft.model_dump() if draft else None,
                      evidence_pack=pack.model_dump() if pack else None,
-                     trace=toolbox.trace, stats=stats, error=error)
+                     trace=toolbox.trace, stats=stats, error=error, quota_retry_after=quota_retry_after)

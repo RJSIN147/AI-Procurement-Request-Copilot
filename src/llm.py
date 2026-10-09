@@ -21,6 +21,14 @@ class LLMUnavailable(RuntimeError):
     pass
 
 
+class QuotaExhausted(LLMUnavailable):
+    """The provider's daily token/request limit is used up; waiting a minute won't help."""
+
+    def __init__(self, message: str, retry_after: float | None = None):
+        super().__init__(message)
+        self.retry_after = retry_after
+
+
 def llm_configured() -> bool:
     return bool(os.getenv("GROQ_API_KEY") or os.getenv("LLM_API_KEY"))
 
@@ -70,6 +78,14 @@ class LLMClient:
             try:
                 response = self.client.chat.completions.create(**kwargs)
             except openai.RateLimitError as exc:
+                if "per day" in str(exc):
+                    # TPD / RPD limit: Groq says how long until there's room, often many minutes
+                    try:
+                        retry = float(exc.response.headers.get("retry-after", ""))
+                    except (TypeError, ValueError):
+                        retry = None
+                    raise QuotaExhausted("Groq daily limit reached for this model"
+                                         + (f", retry in ~{retry / 60:.0f} min" if retry else ""), retry) from exc
                 # Groq free tier is 8k tokens/min, so this happens mid-run. Not counted as latency.
                 wait = _retry_after(exc, attempt)
                 self.telemetry.rate_limit_wait_ms += wait * 1000

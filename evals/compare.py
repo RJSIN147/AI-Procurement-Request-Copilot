@@ -3,6 +3,7 @@
     python evals/compare.py                       # public + extra cases, single/staged/rules
     python evals/compare.py --cases public --repeats 3
     python evals/compare.py --architectures single staged
+    python evals/compare.py --resume              # only run cases without a saved result
 
 Outputs (evals/results/):
     runs.csv            one row per (architecture, case, repeat)
@@ -83,37 +84,47 @@ def extra_checks(decision, expectations: dict) -> list[str]:
     return failures
 
 
-def run_case(case: dict, architecture: str, rep: int) -> dict:
+def record_path(case_id: str, architecture: str, rep: int) -> Path:
+    return OUT / "decisions" / architecture / f"{case_id}{'' if rep == 0 else f'_r{rep}'}.json"
+
+
+def run_case(case: dict, architecture: str, rep: int) -> dict | None:
+    """Run one case and save the full record. Returns None if the provider's daily quota ran out."""
     report = analyze_request(case["request"], architecture, vendor_risk_fn=risk_fn_for(case))
-    d, s, t = report.decision, report.stats, report.decision.telemetry
-
-    failures = minimum_checks(d, case["expectations"]) + extra_checks(d, case["expectations"])
-    action_ok = d.next_action in case["expected_next_action"]
-    draft_action_ok = s["draft_action"] in case["expected_next_action"] if s["draft_present"] else None
-
-    folder = OUT / "decisions" / architecture
-    folder.mkdir(parents=True, exist_ok=True)
-    (folder / f"{case['case_id']}{'' if rep == 0 else f'_r{rep}'}.json").write_text(json.dumps({
+    if report.quota_retry_after is not None:
+        return None
+    d = report.decision
+    record = {
         "case_id": case["case_id"], "title": case["title"], "expected_next_action": case["expected_next_action"],
-        "minimum_check_failures": failures, "decision": d.model_dump(), "model_draft": report.draft,
-        "analyst_evidence_pack": report.evidence_pack, "guardrail_stats": s, "error": report.error,
+        "minimum_check_failures": minimum_checks(d, case["expectations"]) + extra_checks(d, case["expectations"]),
+        "decision": d.model_dump(), "model_draft": report.draft,
+        "analyst_evidence_pack": report.evidence_pack, "guardrail_stats": report.stats, "error": report.error,
         "tool_trace": [{"tool": c["tool"], "args": c["args"]} for c in report.trace],
-    }, indent=2, default=str), encoding="utf-8")
+    }
+    path = record_path(case["case_id"], architecture, rep)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(record, indent=2, default=str), encoding="utf-8")
+    return row_from_record(record, architecture, rep)
 
+
+def row_from_record(record: dict, architecture: str, rep: int) -> dict:
+    d, s, t = record["decision"], record["guardrail_stats"], record["decision"]["telemetry"]
+    expected, failures = record["expected_next_action"], record["minimum_check_failures"]
+    draft_action_ok = s["draft_action"] in expected if s["draft_present"] else None
     return {
-        "case_id": case["case_id"], "request_id": case["request_id"], "architecture": architecture, "rep": rep,
-        "passed_minimum_checks": not failures, "expected_action": "|".join(case["expected_next_action"]),
-        "next_action": d.next_action, "action_correct": action_ok,
+        "case_id": record["case_id"], "request_id": d["request_id"], "architecture": architecture, "rep": rep,
+        "passed_minimum_checks": not failures, "expected_action": "|".join(expected),
+        "next_action": d["next_action"], "action_correct": d["next_action"] in expected,
         "draft_action": s["draft_action"] or "", "draft_action_correct": "" if draft_action_ok is None else draft_action_ok,
         "action_overridden": s["action_overridden"],
         "approvals_added_by_guardrail": ";".join(s["approvals_added"]),
         "flags_added_by_guardrail": ";".join(s["flags_added"]),
         "draft_policy_complete": s["draft_present"] and not s["approvals_added"] and not s["flags_added"],
         "evidence_cited": s["evidence_total"], "evidence_ungrounded": s["evidence_ungrounded"],
-        "latency_ms": t.latency_ms, "rate_limit_wait_ms": t.rate_limit_wait_ms,
-        "llm_calls": t.llm_calls, "tool_calls": t.tool_calls,
-        "prompt_tokens": t.prompt_tokens, "completion_tokens": t.completion_tokens,
-        "error": report.error or "", "failures": " | ".join(failures),
+        "latency_ms": t["latency_ms"], "rate_limit_wait_ms": t["rate_limit_wait_ms"],
+        "llm_calls": t["llm_calls"], "tool_calls": t["tool_calls"],
+        "prompt_tokens": t["prompt_tokens"], "completion_tokens": t["completion_tokens"],
+        "error": record["error"] or "", "failures": " | ".join(failures),
     }
 
 
@@ -192,6 +203,10 @@ def main() -> None:
     parser.add_argument("--cases", choices=["public", "extra", "all"], default="all")
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--pause", type=float, default=0.0, help="seconds between runs (rate limits)")
+    parser.add_argument("--resume", action="store_true",
+                        help="keep finished cases in evals/results/decisions and only run the missing ones")
+    parser.add_argument("--wait-for-quota", action="store_true",
+                        help="if Groq's daily limit runs out, wait for it instead of stopping")
     args = parser.parse_args()
 
     if not llm_configured() and any(a != "rules" for a in args.architectures):
@@ -205,7 +220,21 @@ def main() -> None:
             print(f"\n== {architecture}")
             for case in cases:
                 for rep in range(args.repeats):
+                    path = record_path(case["case_id"], architecture, rep)
+                    if args.resume and path.exists():
+                        rows.append(row_from_record(json.loads(path.read_text(encoding="utf-8")), architecture, rep))
+                        print(f"done  {case['case_id']:<7} (kept from earlier run)")
+                        continue
                     row = run_case(case, architecture, rep)
+                    while row is None:
+                        # Free tier is 200k tokens/day per model, less than one full comparison.
+                        if not args.wait_for_quota:
+                            print(f"\nGroq daily limit reached at {architecture} {case['case_id']}. Finished cases "
+                                  "are saved; rerun later with --resume (or use --wait-for-quota).")
+                            return
+                        print(f"wait  {case['case_id']:<7} daily limit reached, waiting 10 min", flush=True)
+                        time.sleep(600)
+                        row = run_case(case, architecture, rep)
                     rows.append(row)
                     status = "PASS" if row["passed_minimum_checks"] and row["action_correct"] else "FAIL"
                     print(f"{status}  {case['case_id']:<7} {row['next_action']:<22} {row['latency_ms']:>8.0f} ms  "
